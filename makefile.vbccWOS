@@ -8,11 +8,11 @@
 # This file is part of the MiniGL library project
 # See the file Licence.txt for more details
 #
-# Use Bear to generate compile_commands.json file
-# https://github.com/rizsotto/Bear
+# Bear doesn't work with vbcc compiler. Use 'make compile_commands' instead
+# to generate compile_commands.json for IDE support
 #
 
-INCLUDE = -I./include -I$(VBCC)/targets/ppc-warpos/include -I$(NDK_INCLUDES) -I/opt/vbcc/local/Include_H 
+INCLUDE = -I./include -I$(VBCC)/targets/ppc-warpos/include -I$(NDK_INCLUDES) -I/opt/vbcc/local/Include_H
 
 CFLAGS = -O2 -speed -cpu=603 -maxoptpasses=30 -merge-constants -c99  $(INCLUDE) $(DEBUG)
 
@@ -33,6 +33,8 @@ LIBOBJ = $(DIR)/kprintf.o $(DIR)/init.o $(DIR)/glu.o \
 	$(DIR)/hclip.o $(DIR)/vertexbuffer.o $(DIR)/vertexarray.o $(DIR)/aclip.o \
 	$(DIR)/vertexelements.o
 
+.PHONY: all clean lib compile_commands
+
 all: $(LIBNAME) $(DEMOS)
 
 #install:
@@ -43,6 +45,27 @@ clean:
 
 lib: $(LIBNAME)
 	@echo "Done"
+
+# Generate compile_commands.json for IDE support (Bear doesn't work with vbcc)
+compile_commands:
+	@echo "[" > compile_commands.json
+	@first=true; \
+	for src in src/kprintf.c src/init.c src/glu.c src/fog.c src/others.c src/texture.c src/context.c src/matrix.c src/draw.c src/hclip.c src/vertexbuffer.c src/vertexarray.c src/aclip.c src/vertexelements.c; do \
+		obj=$$(basename $$src .c); \
+		if [ "$$first" = true ]; then \
+			first=false; \
+		else \
+			echo "," >> compile_commands.json; \
+		fi; \
+		echo "  {" >> compile_commands.json; \
+		echo "    \"directory\": \"$$(pwd)\"," >> compile_commands.json; \
+		echo "    \"command\": \"$(CC) $(CFLAGS) -c -o $(DIR)/$$obj.o $$src\"," >> compile_commands.json; \
+		echo "    \"file\": \"$$src\"" >> compile_commands.json; \
+		printf "  }" >> compile_commands.json; \
+	done; \
+	echo "" >> compile_commands.json; \
+	echo "]" >> compile_commands.json
+	@echo "compile_commands.json generated successfully"
 
 $(EXENAME): $(EXESRC) $(LIBNAME)
 	$(CCPOSIX) $(CFLAGS) -o $@ $< $(LIBS)
