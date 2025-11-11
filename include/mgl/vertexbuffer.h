@@ -15,44 +15,44 @@
 #ifndef __VERTEXBUFFER_H
 #define __VERTEXBUFFER_H
 
-#pragma pack(push,2)
+#pragma pack(push, 2)
 #include <Warp3D/Warp3D.h>
 #pragma pack(pop)
 
 struct TCoord_t
 {
-    W3D_Float	s,t;
-
+    W3D_Float s, t;
 };
 
-struct MGLVertex_t {
+struct MGLVertex_t
+{
+    W3D_Vertex v; // currently 64 bytes
 
-	W3D_Vertex	v; //currently 64 bytes
+    struct TCoord_t tcoord; // virtual unit
+    ULONG outcode;
 
-	struct TCoord_t	tcoord; //virtual unit
-	ULONG		outcode;
+    int xi, yi, zi;
 
-	int		xi,yi,zi;
+    float bx, by, bz, bw;
+    GLfloat q;
 
-	float		bx,by,bz,bw;
-	GLfloat		q;
+    GLuint normal; // NormalBuffer-index
 
-	GLuint		normal;   //NormalBuffer-index
-
-	GLuint		cbuf_pos; //unused (16 byte align)
-	GLubyte		color[4]; //for vertexarrays
+    GLuint cbuf_pos;  // unused (16 byte align)
+    GLubyte color[4]; // for vertexarrays
 };
 
 typedef struct MGLVertex_t MGLVertex;
 
-enum {
-	MGL_CLIP_NEGW   =   1<<0,
-	MGL_CLIP_TOP    =   1<<1,
-	MGL_CLIP_BOTTOM =   1<<2,
-	MGL_CLIP_LEFT   =   1<<3,
-	MGL_CLIP_RIGHT  =   1<<4,
-	MGL_CLIP_FRONT  =   1<<5,
-	MGL_CLIP_BACK   =   1<<6
+enum
+{
+    MGL_CLIP_NEGW = 1 << 0,
+    MGL_CLIP_TOP = 1 << 1,
+    MGL_CLIP_BOTTOM = 1 << 2,
+    MGL_CLIP_LEFT = 1 << 3,
+    MGL_CLIP_RIGHT = 1 << 4,
+    MGL_CLIP_FRONT = 1 << 5,
+    MGL_CLIP_BACK = 1 << 6
 };
 
 
@@ -61,8 +61,8 @@ enum {
 
 typedef struct PolyIndex_s
 {
-	ULONG numverts;
-	ULONG first;
+    ULONG numverts;
+    ULONG first;
 } PolyIndex;
 
 #endif

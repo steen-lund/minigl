@@ -21,7 +21,7 @@
 ** (only the lazy programmer needs this overhead :))
 */
 
-//#define CLAMP_COLORS 1
+// #define CLAMP_COLORS 1
 
 /* This define enables some sanity-checks for vertexarrays.
 **
@@ -34,28 +34,28 @@
 **
 */
 
-//#define VA_SANITY_CHECK 1
+// #define VA_SANITY_CHECK 1
 
 
 /* define if you want to use static inline functions instead
 ** of macros
 */
 
-//#define USE_MGLAPI 1
+// #define USE_MGLAPI 1
 
-//this tells mglmacros.h not to replace the API:
+// this tells mglmacros.h not to replace the API:
 
 #ifdef USE_MGLAPI
-	#define NO_MGLMACROS 1
+#define NO_MGLMACROS 1
 #else
-	#undef NO_MGLMACROS
+#undef NO_MGLMACROS
 #endif
 
 
 // Stack sizes of the different matrix stacks
 
-#define MODELVIEW_STACK_SIZE    40
-#define PROJECTION_STACK_SIZE  5
+#define MODELVIEW_STACK_SIZE 40
+#define PROJECTION_STACK_SIZE 5
 
 // Define this to make mglLockMode available
 #define AUTOMATIC_LOCKING_ENABLE 1
@@ -83,8 +83,3 @@
 #define MGL_MAXVERTS 1024
 
 #endif
-
-
-
-
-

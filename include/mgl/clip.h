@@ -23,8 +23,8 @@
 
 typedef struct MGLPolygon_t
 {
-	int numverts;
-	int verts[MGL_MAXVERTS];
+    int numverts;
+    int verts[MGL_MAXVERTS];
 } MGLPolygon;
 
 
@@ -32,10 +32,10 @@ typedef struct MGLPolygon_t
 
 typedef struct PolyBuffer_s
 {
-	int numverts;
-	int nextfree;	//used for clipping
-	ULONG type;	//w3dtype
-	ULONG verts[64]; //check length for triangle-chains
+    int numverts;
+    int nextfree;    // used for clipping
+    ULONG type;      // w3dtype
+    ULONG verts[64]; // check length for triangle-chains
 } PolyBuffer;
 
 
@@ -49,6 +49,3 @@ void hc_ClipPolyFF(GLcontext context, MGLPolygon *poly, ULONG or_codes);
 GLboolean hc_DecideFrontface(GLcontext context, MGLVertex *a, MGLVertex *b, MGLVertex *c);
 
 #endif
-
-
-

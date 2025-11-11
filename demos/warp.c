@@ -9,20 +9,21 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>	//OF
+#include <string.h> //OF
 
 #ifndef M_PI
 #define M_PI 3.14159265
 #endif
 
-GLint width=640; GLint height=480;
+GLint width = 640;
+GLint height = 480;
 GLfloat startilt = 0.0;
 GLfloat t_off = 0.0;
 GLfloat fov = 170.0;
 
 typedef struct
 {
-    GLfloat x,y,z,u,v;
+    GLfloat x, y, z, u, v;
 } MyVertex;
 
 GLenum LockMode = MGL_LOCK_SMART;
@@ -30,7 +31,7 @@ GLenum LockMode = MGL_LOCK_SMART;
 GLubyte *LoadPPM(char *name, GLint *w, GLint *h)
 {
     int i;
-    unsigned long x,y;
+    unsigned long x, y;
     FILE *f;
     GLubyte *where;
 
@@ -38,43 +39,47 @@ GLubyte *LoadPPM(char *name, GLint *w, GLint *h)
 
     if (!f)
     {
-        *w = 0; *h=0;
+        *w = 0;
+        *h = 0;
         return NULL;
     }
-    #ifndef __STORM__
-    i = fscanf(f, "P6\n%lu %lu\n255\n",&x, &y);	//OF (%lu)
-    #else
-    i = fscanf(f, "P6\n%lu\n%lu\n255\n", &x, &y);	//OF (%lu)
-    #endif
+#ifndef __STORM__
+    i = fscanf(f, "P6\n%lu %lu\n255\n", &x, &y); // OF (%lu)
+#else
+    i = fscanf(f, "P6\n%lu\n%lu\n255\n", &x, &y); // OF (%lu)
+#endif
 
-    if (i!= 2)
+    if (i != 2)
     {
         printf("Error scanning PPM header\n");
         fclose(f);
-        *w = 0; *h = 0;
+        *w = 0;
+        *h = 0;
         return NULL;
     }
 
     *w = x;
     *h = y;
 
-    where = malloc(x*y*3);
+    where = malloc(x * y * 3);
     if (!where)
     {
         printf("Error out of Memory\n");
         fclose(f);
-        *w = 0; *h = 0;
+        *w = 0;
+        *h = 0;
         return NULL;
     }
 
-    i = fread(where, 1, x*y*3, f);
+    i = fread(where, 1, x * y * 3, f);
     fclose(f);
 
-    if (i != x*y*3)
+    if (i != x * y * 3)
     {
         printf("Error while reading file\n");
         free(where);
-        *w = 0; *h = 0;
+        *w = 0;
+        *h = 0;
         return NULL;
     }
 
@@ -85,7 +90,7 @@ GLubyte *LoadPPM(char *name, GLint *w, GLint *h)
 BOOL TexInit(char *name, int num)
 {
     GLubyte *tmap;
-    GLint x,y;
+    GLint x, y;
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -104,7 +109,7 @@ BOOL TexInit(char *name, int num)
 
     glBindTexture(GL_TEXTURE_2D, num);
     glTexImage2D(GL_TEXTURE_2D, 0, 3,
-        x,y, 0, GL_RGB, GL_UNSIGNED_BYTE, tmap);
+                 x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, tmap);
     free(tmap);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -117,13 +122,13 @@ BOOL TexInit(char *name, int num)
 
 static void drawFlare(GLint texnum)
 {
-    GLfloat x,y,w,h;
+    GLfloat x, y, w, h;
 
-    w=width/10.0;
-    h=w;
+    w = width / 10.0;
+    h = w;
 
-    x=width/2.0-w/2.0;
-    y=height/2.0-h/2.0;
+    x = width / 2.0 - w / 2.0;
+    y = height / 2.0 - h / 2.0;
 
 
     glBindTexture(GL_TEXTURE_2D, texnum);
@@ -138,14 +143,14 @@ static void drawFlare(GLint texnum)
 
     */
     glBegin(MGL_FLATFAN);
-        glTexCoord2f(0.0, 0.0);
-        glVertex2f(x,y);
-        glTexCoord2f(1.0, 0.0);
-        glVertex2f(x+w, y);
-        glTexCoord2f(1.0, 1.0);
-        glVertex2f(x+w,y+h);
-        glTexCoord2f(0.0, 1.0);
-        glVertex2f(x,y+h);
+    glTexCoord2f(0.0, 0.0);
+    glVertex2f(x, y);
+    glTexCoord2f(1.0, 0.0);
+    glVertex2f(x + w, y);
+    glTexCoord2f(1.0, 1.0);
+    glVertex2f(x + w, y + h);
+    glTexCoord2f(0.0, 1.0);
+    glVertex2f(x, y + h);
     glEnd();
     glDisable(GL_BLEND);
 }
@@ -154,48 +159,48 @@ static void drawFlare(GLint texnum)
 static void drawStarField(GLint tex1, GLfloat off)
 {
     GLfloat w = 1.0;
-    #define BACKPLANE -8.0
-    #define TEXTU 0.0
-    #define TEXTV 2.0
+#define BACKPLANE -8.0
+#define TEXTU 0.0
+#define TEXTV 2.0
 
     glBindTexture(GL_TEXTURE_2D, tex1);
     glBegin(GL_QUADS);
 
-        glTexCoord2f(TEXTU, TEXTV+off);
-        glVertex3f(-1.0,  1.0,  BACKPLANE);
-        glTexCoord2f(TEXTU, off);
-        glVertex3f(-1.0,  1.0,   1.0);
-        glTexCoord2f(1.0, off);
-        glVertex3f(-1.0, -1.0,   1.0);
-        glTexCoord2f(1.0, TEXTV+off);
-        glVertex3f(-1.0, -1.0,  BACKPLANE);
+    glTexCoord2f(TEXTU, TEXTV + off);
+    glVertex3f(-1.0, 1.0, BACKPLANE);
+    glTexCoord2f(TEXTU, off);
+    glVertex3f(-1.0, 1.0, 1.0);
+    glTexCoord2f(1.0, off);
+    glVertex3f(-1.0, -1.0, 1.0);
+    glTexCoord2f(1.0, TEXTV + off);
+    glVertex3f(-1.0, -1.0, BACKPLANE);
 
-        glTexCoord2f(TEXTU, TEXTV+off);
-        glVertex3f( 1.0,  1.0,  BACKPLANE);
-        glTexCoord2f(TEXTU, off);
-        glVertex3f( 1.0,  1.0,   1.0);
-        glTexCoord2f(1.0, off);
-        glVertex3f( 1.0, -1.0,   1.0);
-        glTexCoord2f(1.0, TEXTV+off);
-        glVertex3f( 1.0, -1.0,  BACKPLANE);
+    glTexCoord2f(TEXTU, TEXTV + off);
+    glVertex3f(1.0, 1.0, BACKPLANE);
+    glTexCoord2f(TEXTU, off);
+    glVertex3f(1.0, 1.0, 1.0);
+    glTexCoord2f(1.0, off);
+    glVertex3f(1.0, -1.0, 1.0);
+    glTexCoord2f(1.0, TEXTV + off);
+    glVertex3f(1.0, -1.0, BACKPLANE);
 
-        glTexCoord2f(TEXTU, TEXTV+off);
-        glVertex3f(-1.0,  1.0,  BACKPLANE);
-        glTexCoord2f(TEXTU, off);
-        glVertex3f(-1.0,  1.0,   1.0);
-        glTexCoord2f(1.0, off);
-        glVertex3f( 1.0,  1.0,   1.0);
-        glTexCoord2f(1.0, TEXTV+off);
-        glVertex3f( 1.0,  1.0,  BACKPLANE);
+    glTexCoord2f(TEXTU, TEXTV + off);
+    glVertex3f(-1.0, 1.0, BACKPLANE);
+    glTexCoord2f(TEXTU, off);
+    glVertex3f(-1.0, 1.0, 1.0);
+    glTexCoord2f(1.0, off);
+    glVertex3f(1.0, 1.0, 1.0);
+    glTexCoord2f(1.0, TEXTV + off);
+    glVertex3f(1.0, 1.0, BACKPLANE);
 
-        glTexCoord2f(TEXTU, TEXTV+off);
-        glVertex3f(-1.0, -1.0,  BACKPLANE);
-        glTexCoord2f(TEXTU, off);
-        glVertex3f(-1.0, -1.0,   1.0);
-        glTexCoord2f(1.0, off);
-        glVertex3f( 1.0, -1.0,   1.0);
-        glTexCoord2f(1.0, TEXTV+off);
-        glVertex3f( 1.0, -1.0,  BACKPLANE);
+    glTexCoord2f(TEXTU, TEXTV + off);
+    glVertex3f(-1.0, -1.0, BACKPLANE);
+    glTexCoord2f(TEXTU, off);
+    glVertex3f(-1.0, -1.0, 1.0);
+    glTexCoord2f(1.0, off);
+    glVertex3f(1.0, -1.0, 1.0);
+    glTexCoord2f(1.0, TEXTV + off);
+    glVertex3f(1.0, -1.0, BACKPLANE);
 
     glEnd();
 }
@@ -215,10 +220,10 @@ void reshape(int w, int h)
 
 void DoFrame(void)
 {
- if (LockMode == MGL_LOCK_MANUAL)
-	mglLockDisplay(); //needed with manual locking
+    if (LockMode == MGL_LOCK_MANUAL)
+        mglLockDisplay(); // needed with manual locking
 
-    glClear(GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -237,28 +242,26 @@ void DoFrame(void)
     startilt += 0.1;
     t_off += 0.007;
 
-mglSwitchDisplay();
+    mglSwitchDisplay();
 }
 
 
 void keys(char c)
 {
-
     switch (c)
     {
-        case 0x1b:
-            mglExit();
-            break;
-        case '+':
-            if (fov < 165.0)
-                fov += 5.0;
-            break;
-        case '-':
-            if (fov > 30)
-                fov -= 5.0;
-            break;
+    case 0x1b:
+        mglExit();
+        break;
+    case '+':
+        if (fov < 165.0)
+            fov += 5.0;
+        break;
+    case '-':
+        if (fov > 30)
+            fov -= 5.0;
+        break;
     }
-
 }
 
 int main(int argc, char *argv[])
@@ -267,7 +270,7 @@ int main(int argc, char *argv[])
     char *filename = "data/stars.ppm";
     char *flarename = "data/flare.ppm";
 
-    for (i=1; i<argc; i++)
+    for (i = 1; i < argc; i++)
     {
         if (0 == strcasecmp(argv[i], "-width"))
         {
@@ -293,7 +296,7 @@ int main(int argc, char *argv[])
             i++;
             flarename = argv[i];
         }
-  
+
         if (0 == strcmp(argv[i], "-lock"))
         {
             i++;
@@ -309,8 +312,9 @@ int main(int argc, char *argv[])
             {
                 LockMode = MGL_LOCK_SMART;
             }
-            else printf("Unknown lockmode. Using default\n");
-	  }
+            else
+                printf("Unknown lockmode. Using default\n");
+        }
     }
 
     mglChooseVertexBufferSize(1000);
@@ -318,7 +322,7 @@ int main(int argc, char *argv[])
 
     MGLInit();
 
-    mglCreateContext(0,0,width,height);
+    mglCreateContext(0, 0, width, height);
     mglEnableSync(GL_TRUE);
 
     glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -327,7 +331,7 @@ int main(int argc, char *argv[])
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-    if ( TexInit(filename, 1) && TexInit(flarename, 2) )
+    if (TexInit(filename, 1) && TexInit(flarename, 2))
     {
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glColor3f(1.0, 1.0, 1.0);
@@ -338,7 +342,7 @@ int main(int argc, char *argv[])
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 
-        mglLockMode(LockMode); //was MGL_LOCK_SMART
+        mglLockMode(LockMode); // was MGL_LOCK_SMART
         mglIdleFunc(DoFrame);
         mglKeyFunc(keys);
         mglMainLoop();
@@ -350,6 +354,5 @@ int main(int argc, char *argv[])
 
     mglDeleteContext();
     MGLTerm();
-    return 0;             /* ANSI C requires main to return int. */
+    return 0; /* ANSI C requires main to return int. */
 }
-

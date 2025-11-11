@@ -65,24 +65,24 @@ GLfloat Viewport[4];
 
 /* Sample geometry */
 GLfloat quadV[][4] = {
-	{ -1.0f, 0.0f, -1.0f, 1.0f },
-	{  1.0f, 0.0f, -1.0f, 1.0f },
-	{  1.0f, 0.5f, -0.2f, 1.0f },
-	{ -1.0f, 0.5f, -0.2f, 1.0f },
+    {-1.0f, 0.0f, -1.0f, 1.0f},
+    {1.0f, 0.0f, -1.0f, 1.0f},
+    {1.0f, 0.5f, -0.2f, 1.0f},
+    {-1.0f, 0.5f, -0.2f, 1.0f},
 };
 
 GLfloat quadC[][3] = {
-	{ 1.0f, 0.0f, 0.0f },
-	{ 0.0f, 1.0f, 0.0f },
-	{ 0.0f, 0.0f, 1.0f },
-	{ 1.0f, 1.0f, 1.0f },
+    {1.0f, 0.0f, 0.0f},
+    {0.0f, 1.0f, 0.0f},
+    {0.0f, 0.0f, 1.0f},
+    {1.0f, 1.0f, 1.0f},
 };
 
 GLfloat quadT[][2] = {
-	{ 0.0f, 0.0f },
-	{ 0.0f, 1.0f },
-	{ 1.0f, 1.0f },
-	{ 1.0f, 0.0f },
+    {0.0f, 0.0f},
+    {0.0f, 1.0f},
+    {1.0f, 1.0f},
+    {1.0f, 0.0f},
 };
 
 /*********************************************************************
@@ -96,48 +96,61 @@ int texHeight = 128;
 static void
 setCheckedTexture(void)
 {
-	int texSize;
-	void *textureBuf;
-	GLubyte *p;
-	int i,j;
+    int texSize;
+    void *textureBuf;
+    GLubyte *p;
+    int i, j;
 
-	/* malloc for rgba as worst case */
-	texSize = texWidth*texHeight*4;
+    /* malloc for rgba as worst case */
+    texSize = texWidth * texHeight * 4;
 
-	textureBuf = malloc(texSize);
-	if (NULL == textureBuf) return;
+    textureBuf = malloc(texSize);
+    if (NULL == textureBuf)
+        return;
 
-	p = (GLubyte *)textureBuf;
-	for (i=0; i < texWidth; i++) {
-		for (j=0; j < texHeight; j++) {
-			if ((i ^ j) & 8) {
-				p[0] = 0xff; p[1] = 0xff; p[2] = 0xff; p[3] = 0xff;
-			} else {
-				p[0] = 0x08; p[1] = 0x08; p[2] = 0x08; p[3] = 0xff;
-			}
-			p += 4;
-		}
-	}
+    p = (GLubyte *)textureBuf;
+    for (i = 0; i < texWidth; i++)
+    {
+        for (j = 0; j < texHeight; j++)
+        {
+            if ((i ^ j) & 8)
+            {
+                p[0] = 0xff;
+                p[1] = 0xff;
+                p[2] = 0xff;
+                p[3] = 0xff;
+            }
+            else
+            {
+                p[0] = 0x08;
+                p[1] = 0x08;
+                p[2] = 0x08;
+                p[3] = 0xff;
+            }
+            p += 4;
+        }
+    }
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight,
-			0, GL_RGBA, GL_UNSIGNED_BYTE, textureBuf);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight,
+                 0, GL_RGBA, GL_UNSIGNED_BYTE, textureBuf);
 
-	free(textureBuf);
+    free(textureBuf);
 }
 
 /* Perform one transform operation */
 static void
 Transform(GLfloat *matrix, GLfloat *in, GLfloat *out)
 {
-	int ii;
+    int ii;
 
-	for (ii=0; ii<4; ii++) {
-		out[ii] =
-			in[0] * matrix[0*4+ii] +
-			in[1] * matrix[1*4+ii] +
-			in[2] * matrix[2*4+ii] +
-			in[3] * matrix[3*4+ii];
-	}
+    for (ii = 0; ii < 4; ii++)
+    {
+        out[ii] =
+            in[0] * matrix[0 * 4 + ii] +
+            in[1] * matrix[1 * 4 + ii] +
+            in[2] * matrix[2 * 4 + ii] +
+            in[3] * matrix[3 * 4 + ii];
+    }
 }
 
 /* Transform a vertex from object coordinates to window coordinates.
@@ -146,38 +159,38 @@ Transform(GLfloat *matrix, GLfloat *in, GLfloat *out)
 static void
 DoTransform(GLfloat *in, GLfloat *out)
 {
-	GLfloat tmp[4];
-	GLfloat invW;   /* 1/w */
+    GLfloat tmp[4];
+    GLfloat invW; /* 1/w */
 
-	/* Modelview xform */
-	Transform(ModelView, in, tmp);
+    /* Modelview xform */
+    Transform(ModelView, in, tmp);
 
-	/* Lighting calculation goes here! */
+    /* Lighting calculation goes here! */
 
-	/* Projection xform */
-	Transform(Projection, tmp, out);
+    /* Projection xform */
+    Transform(Projection, tmp, out);
 
-	if (out[3] == 0.0f) /* do what? */
-		return;
+    if (out[3] == 0.0f) /* do what? */
+        return;
 
-	invW = 1.0f / out[3];
+    invW = 1.0f / out[3];
 
-	/* Perspective divide */
-	out[0] *= invW;
-	out[1] *= invW;
-	out[2] *= invW;
+    /* Perspective divide */
+    out[0] *= invW;
+    out[1] *= invW;
+    out[2] *= invW;
 
-	/* Map to 0..1 range */
-	out[0] = out[0] * 0.5f + 0.5f;
-	out[1] = out[1] * 0.5f + 0.5f;
-	out[2] = out[2] * 0.5f + 0.5f;
+    /* Map to 0..1 range */
+    out[0] = out[0] * 0.5f + 0.5f;
+    out[1] = out[1] * 0.5f + 0.5f;
+    out[2] = out[2] * 0.5f + 0.5f;
 
-	/* Map to viewport */
-	out[0] = out[0] * Viewport[2] + Viewport[0];
-	out[1] = out[1] * Viewport[3] + Viewport[1];
+    /* Map to viewport */
+    out[0] = out[0] * Viewport[2] + Viewport[0];
+    out[1] = out[1] * Viewport[3] + Viewport[1];
 
-	/* Store inverted w for performance */
-	out[3] = invW;
+    /* Store inverted w for performance */
+    out[3] = invW;
 }
 
 /*********************************************************************
@@ -187,149 +200,150 @@ DoTransform(GLfloat *in, GLfloat *out)
 /* For the sake of brevity, I'm use OpenGL to compute my matrices. */
 void UpdateModelView(void)
 {
-	glPushMatrix();
-	glLoadIdentity();
-	gluLookAt(0.0f, 1.0f, -4.0f,
-		  0.0f, 0.0f, 0.0f,
-		  0.0f, 1.0f, 0.0f);
-	glRotatef(rot, 0.0f, 1.0f, 0.0f);
-	/* Retrieve the matrix */
-	glGetFloatv(GL_MODELVIEW_MATRIX, ModelView);
-	glPopMatrix();
+    glPushMatrix();
+    glLoadIdentity();
+    gluLookAt(0.0f, 1.0f, -4.0f,
+              0.0f, 0.0f, 0.0f,
+              0.0f, 1.0f, 0.0f);
+    glRotatef(rot, 0.0f, 1.0f, 0.0f);
+    /* Retrieve the matrix */
+    glGetFloatv(GL_MODELVIEW_MATRIX, ModelView);
+    glPopMatrix();
 }
 
 void InitMatrices(void)
 {
-	/* Calculate projection matrix */
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	gluPerspective(45.0f, 1.0f, 1.0f, 100.0f);
-	/* Retrieve the matrix */
-	glGetFloatv(GL_PROJECTION_MATRIX, Projection);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
+    /* Calculate projection matrix */
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluPerspective(45.0f, 1.0f, 1.0f, 100.0f);
+    /* Retrieve the matrix */
+    glGetFloatv(GL_PROJECTION_MATRIX, Projection);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
 
-	UpdateModelView();
+    UpdateModelView();
 }
 
 void Init()
 {
-	glClearColor(0.2f, 0.2f, 0.6f, 1.0f);
+    glClearColor(0.2f, 0.2f, 0.6f, 1.0f);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glEnable(GL_TEXTURE_2D);
-	setCheckedTexture();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glEnable(GL_TEXTURE_2D);
+    setCheckedTexture();
 
-	InitMatrices();
+    InitMatrices();
 }
 
 void Redraw(void)
 {
-	GLfloat tmp[4];
-	int ii;
+    GLfloat tmp[4];
+    int ii;
 
-	mglLockDisplay();
+    mglLockDisplay();
 
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//        glBegin(GL_QUADS);
-	glBegin(GL_TRIANGLE_FAN);
+    //        glBegin(GL_QUADS);
+    glBegin(GL_TRIANGLE_FAN);
 
-	for (ii = 0; ii < 4; ii++) {
+    for (ii = 0; ii < 4; ii++)
+    {
+        /* Transform a vertex from object to window coordinates.
+         * 1/w is returned as tmp[3] for perspective-correcting
+         * the texture coordinates.
+         */
+        DoTransform(quadV[ii], tmp);
 
-		/* Transform a vertex from object to window coordinates.
-		 * 1/w is returned as tmp[3] for perspective-correcting
-		 * the texture coordinates.
-		 */
-		DoTransform(quadV[ii], tmp);
+        /* Ideally the colors will be computed by the lighting equation,
+         * but I've hard-coded values for this example.
+         */
+        glColor3fv(quadC[ii]);
 
-		/* Ideally the colors will be computed by the lighting equation,
-		 * but I've hard-coded values for this example.
-		 */
-		glColor3fv(quadC[ii]);
+        /* Scale by 1/w (stored in tmp[3]) */
+        glTexCoord4f(quadT[ii][0] * tmp[3],
+                     quadT[ii][1] * tmp[3], 0.0f, tmp[3]);
 
-		/* Scale by 1/w (stored in tmp[3]) */
-		glTexCoord4f(quadT[ii][0] * tmp[3],
-				 quadT[ii][1] * tmp[3], 0.0f, tmp[3]);
+        /* Note I am using Vertex3, not Vertex4, since we have already
+         * performed the perspective divide.
+         */
+        glVertex3fv(tmp);
+    }
 
-		/* Note I am using Vertex3, not Vertex4, since we have already
-		 * performed the perspective divide.
-		 */
-		glVertex3fv(tmp);
-	}
+    glEnd();
 
-	glEnd();
+    mglSwitchDisplay();
 
-	mglSwitchDisplay();
-
-	if (motion)
-		Motion();
-
+    if (motion)
+        Motion();
 }
 
 void Motion(void)
 {
-	rot += 3.0f;
-	if (rot >= 360.0f) rot -= 360.0f;
-	UpdateModelView();
+    rot += 3.0f;
+    if (rot >= 360.0f)
+        rot -= 360.0f;
+    UpdateModelView();
 }
 
 
 void Key(char key)
 {
-	switch (key) {
-		case 27:
-			mglExit();
-			break;
-		case 'm':
-			motion = !motion;
-			break;
-	}
+    switch (key)
+    {
+    case 27:
+        mglExit();
+        break;
+    case 'm':
+        motion = !motion;
+        break;
+    }
 }
 
 
 void Reshape(int width, int height)
 {
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0.0f, (GLfloat) width, 0.0f, (GLfloat) height, -1.0f, 1.0f);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0f, (GLfloat)width, 0.0f, (GLfloat)height, -1.0f, 1.0f);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
-	glViewport(0, 0, width, height);
-	glDepthRange(0.0f, 1.0f);
+    glViewport(0, 0, width, height);
+    glDepthRange(0.0f, 1.0f);
 
-	Viewport[0] = Viewport[1] = 0.0f;
-	Viewport[2] = (GLfloat) width;
-	Viewport[3] = (GLfloat) height;
+    Viewport[0] = Viewport[1] = 0.0f;
+    Viewport[2] = (GLfloat)width;
+    Viewport[3] = (GLfloat)height;
 }
 
 int
 #ifdef WIN32
-__cdecl
+    __cdecl
 #endif
-main(int argc, char *argv[])
+    main(int argc, char *argv[])
 {
-	int width = 640, height = 480;
-	char *t;
+    int width = 640, height = 480;
+    char *t;
 
-	mglChooseWindowMode(GL_TRUE);
-	MGLInit();
-	mglCreateContext(0,0,width,height);
+    mglChooseWindowMode(GL_TRUE);
+    MGLInit();
+    mglCreateContext(0, 0, width, height);
 
-	Init();
-	Reshape(width, height);
+    Init();
+    Reshape(width, height);
 
-	mglKeyFunc(Key);
-	mglIdleFunc(Redraw);
-	mglMainLoop();
+    mglKeyFunc(Key);
+    mglIdleFunc(Redraw);
+    mglMainLoop();
 
-	mglDeleteContext();
-	MGLTerm();
+    mglDeleteContext();
+    MGLTerm();
 
 
-	return 0;
+    return 0;
 }
