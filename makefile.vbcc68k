@@ -1,12 +1,6 @@
 #
-# $Id: makefile.vbcc68k,v 1.1.1.1 2000/04/07 19:44:48 tfrieden Exp $
 #
-# $Author: tfrieden $
-#
-# $Date: 2000/04/07 19:44:48 $
-# $Revision: 1.1.1.1 $
-#
-# Makefile for vbcc AmigaOS/68k by Frank Wille
+# Makefile for vbcc AmigaOS/68k by Frank Wille, updated by Steen Lund
 #
 # (C) 1999 by Hyperion Software
 # All rights reserved
@@ -20,20 +14,18 @@ INCLUDE =
 DEBUG =
 
 CFLAGS = -O1 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(DEBUG)
-
 OP_CFLAGS = -O2 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(DEBUG)
 
-
-LIBS = -lm040 -lmgl -lextra -lcgfx
-LIBNAME = vlibm68k:mgl.lib
+LIBS = -lm040 -lmgl
+LIBNAME = mgl060.lib
 DIR = Build
 EXENAME = GLTest
 EXESRC = src/GLTest.c
 
 DEMOS = GLTest warp varray gears mtex driverinfo
 
-CC=vc +m68kdb
-AR=join as
+CC = vc +aos68k
+CCPOSIX = vc +aos68k-posix
 
 LIBOBJ = $(DIR)/kprintf.o $(DIR)/init.o $(DIR)/glu.o \
 $(DIR)/fog.o $(DIR)/others.o $(DIR)/texture.o \
@@ -43,11 +35,11 @@ $(DIR)/aclip.o $(DIR)/vertexarray.o $(DIR)/vertexelements.o
 
 all: $(LIBNAME) $(DEMOS)
 
-install:
-	copy include/mgl/#?.h vinclude68k:mgl
+#install:
+#	copy include/mgl/#?.h vinclude68k:mgl
 
 clean:
-	delete force quiet $(DIR)/#?.o GLtest
+	rm -rf $(DIR)/*.o $(EXENAME) $(LIBNAME)
 
 lib: $(LIBNAME)
 	@echo "Done"
@@ -56,37 +48,35 @@ INCS = src/sysinc.h src/vertexarray.h include/mgl/clip.h include/mgl/config.h \
        include/mgl/context.h include/mgl/gl.h include/mgl/log.h \
        include/mgl/matrix.h include/mgl/minigl.h include/mgl/vertexbuffer.h
 
-
 driverinfo: demos/driverinfo.c $(LIBNAME)
-	$(CC) $(CFLAGS) -o driverinfo demos/driverinfo.c $(LIBS)
+	$(CCPOSIX) $(CFLAGS) -o $@ demos/driverinfo.c $(LIBS)
 
 warp: demos/warp.c $(LIBNAME)
-	$(CC) $(CFLAGS) -o warp demos/warp.c $(LIBS)
+	$(CCPOSIX) $(CFLAGS) -o $@ demos/warp.c $(LIBS)
 
 varray: demos/varray_new.c $(LIBNAME)
-	$(CC) $(CFLAGS) -o varray demos/varray_new.c $(LIBS)
+	$(CCPOSIX) $(CFLAGS) -o $@ demos/varray_new.c $(LIBS)
 
 varray2: demos/varray.c $(LIBNAME)
-	$(CC) $(CFLAGS) -o varray2 demos/varray.c $(LIBS)
+	$(CCPOSIX) $(CFLAGS) -o $@ demos/varray.c $(LIBS)
 
-gears: demos/gears_stats.c $(LIBNAME)
-	$(CC) $(CFLAGS) -o gears demos/gears_stats.c $(LIBS)
+gears_stats: demos/gears_stats.c $(LIBNAME)
+	$(CCPOSIX) $(CFLAGS) -o $@ demos/gears_stats.c $(LIBS)
+
+gears: demos/gears.c $(LIBNAME)
+	$(CCPOSIX) $(CFLAGS) -o $@ demos/gears.c $(LIBS)
 
 mtex: demos/mtex.c $(LIBNAME)
-	$(CC) $(CFLAGS) -o mtex demos/mtex.c $(LIBS)
+	$(CCPOSIX) $(CFLAGS) -o $@ demos/mtex.c $(LIBS)
 
 rasonly: demos/rasonly.c $(LIBNAME)
-	$(CC) $(CFLAGS) -o rasonly demos/rasonly.c $(LIBS)
-
-
+	$(CCPOSIX) $(CFLAGS) -o $@ demos/rasonly.c $(LIBS)
 
 $(LIBNAME): $(LIBOBJ)
-	$(AR) $(LIBNAME) $(LIBOBJ)
+	cat $(LIBOBJ) > $@
 
 $(EXENAME): $(EXESRC) $(LIBNAME)
-	$(CC) $(CFLAGS) -o $@ $(EXESRC) $(LIBS)
-
-
+	$(CCPOSIX) $(CFLAGS) -o $@ $(EXESRC) $(LIBS)
 
 $(DIR)/texture.o: src/texture.c $(INCS)
 	$(CC) $(OP_CFLAGS) -c -o $@ src/texture.c
@@ -96,7 +86,6 @@ $(DIR)/matrix.o: src/matrix.c $(INCS)
 
 $(DIR)/vertexbuffer.o: src/vertexbuffer.c $(INCS)
 	$(CC) $(OP_CFLAGS) -c -o $@ src/vertexbuffer.c 
-
 
 # Implicit rule to build each module of MiniGL (when optimization level is default)
 $(DIR)/%.o : src/%.c $(INCS)
