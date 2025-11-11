@@ -19,18 +19,14 @@
 #include "mgl/config.h"
 #include "mgl/vertexbuffer.h"
 
-#ifdef __VBCC__
-#pragma amiga-align
-#endif
+#pragma pack(push,2)
 
 #include <intuition/intuition.h>
 
 #ifdef __PPC__
+
 #include <devices/timer.h>
-#endif
 
-
-#ifdef __PPC__
 typedef struct LockTimeHandle_s
 {
 	struct timeval StartTime;
@@ -46,10 +42,7 @@ typedef struct LockTimeHandle_s
 
 #endif
 
-
-#ifdef __VBCC__
-#pragma default-align
-#endif
+#pragma pack(pop)
 
 typedef struct GLcontext_t * GLcontext;
 
@@ -439,6 +432,8 @@ struct GLcontext_t
 	GLfloat         MinTriArea;         /* Minimal area of triangles to be drawn (smaller ones will be rejected)*/
 
 	GLfloat         CurrentPointSize;   /* diameter */
+	
+	GLfloat		LineWidth; // Cowcat
 
 	GLubyte*        GeneratedTextures;  /* Array to keep track of generated textures */
 

@@ -798,6 +798,10 @@ MGLAPI void glColorTableEXT(GLenum target, GLenum internalformat, GLint width, G
 	GLColorTable(CC, target, internalformat, width, format, type, data);
 }
 
+MGLAPI void glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) // Cowcat
+{
+	GLColorMask(CC, red, green, blue, alpha);
+}
 
 /*
 ** These function have no hidden context parameter, but are handled the same in case we want to make
@@ -978,5 +982,17 @@ MGLAPI void mglDrawMultitexBuffer(GLenum s, GLenum d, GLenum env)
 {
 	MGLDrawMultitexBuffer (CC, s, d, env);
 }
+
+// Cowcat
+MGLAPI void mglSetPointer(void)
+{
+	MGLSetPointer(CC);
+}
+
+MGLAPI void mglClearPointer(void)
+{
+	MGLClearPointer(CC);
+}
+//
 
 #endif

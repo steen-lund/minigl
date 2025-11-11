@@ -12,7 +12,7 @@
  *
  */
 
-static char rcsid[] = "$Id: hclip.c,v 1.1.1.1 2000/04/07 19:44:51 hfrieden Exp $";
+//static char rcsid[] = "$Id: hclip.c,v 1.1.1.1 2000/04/07 19:44:51 hfrieden Exp $";
 
 #include "sysinc.h"
 #include <math.h>
@@ -22,15 +22,13 @@ static char rcsid[] = "$Id: hclip.c,v 1.1.1.1 2000/04/07 19:44:51 hfrieden Exp $
 #define CLIP_EPS (1e-7)
 
 #define DUMP_VERTEX(vert) \
- mykprintf("x:%6.3f y:%6.3f z:%6.3f w:%6.3f\nR:%6.3f G:%6.3f B:%6.3f A:%6.3f\nU:%6.3f V:%6.3f\noutcode=0x%X\n",\
-		 (vert).bx, (vert).by, (vert).bz, (vert).bw,                                                                                      \
-		 (vert).v.color.r, (vert).v.color.g, (vert).v.color.b, (vert).v.color.a,                                                          \
-		 (vert).v.u, (vert).v.v, (vert).outcode)
-
+mykprintf("x:%6.3f y:%6.3f z:%6.3f w:%6.3f\nR:%6.3f G:%6.3f B:%6.3f A:%6.3f\nU:%6.3f V:%6.3f\noutcode=0x%X\n",\
+		(vert).bx, (vert).by, (vert).bz, (vert).bw,                                                                                      \
+		(vert).v.color.r, (vert).v.color.g, (vert).v.color.b, (vert).v.color.a,                                                          \
+		(vert).v.u, (vert).v.v, (vert).outcode)
 
 #define LERP(t,a,b) \
 	( (a) + (float)t * ( (b) - (a) ) )
-
 
 #define x1 (a->bx)
 #define y1 (a->by)
@@ -53,7 +51,6 @@ static char rcsid[] = "$Id: hclip.c,v 1.1.1.1 2000/04/07 19:44:51 hfrieden Exp $
 	DUMP_VERTEX(*r);
 #endif
 
-
 //multitexturing with virtual units:(real unit0 + 1 virt)
 
 /*
@@ -63,27 +60,28 @@ Texture2D_State[1] is only set if there is any active units other than unit 0
 If more than 1 hardware unit is present, the number of active virtual units should be reduced by 1. HW units should probably be implemented in a different manner.
 */
 
-
 static void hc_ClipWZero(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shading)
 {
 	float w;
 	ULONG outcode;
 
-
 	float t = (CLIP_EPS-w1)/(w2-w1);
-	r->bx = LERP(t,a->bx, b->bx);
-	r->by = LERP(t,a->by, b->by);
-	r->bz = LERP(t,a->bz, b->bz);
+
+	r->bx = LERP(t, a->bx, b->bx);
+	r->by = LERP(t, a->by, b->by);
+	r->bz = LERP(t, a->bz, b->bz);
 	r->bw = CLIP_EPS;
+
 	if(shading == GL_SMOOTH)
 	{
-	r->v.color.a = LERP(t,a->v.color.a, b->v.color.a);
-	r->v.color.r = LERP(t,a->v.color.r, b->v.color.r);
-	r->v.color.g = LERP(t,a->v.color.g, b->v.color.g);
-	r->v.color.b = LERP(t,a->v.color.b, b->v.color.b);
+		r->v.color.a = LERP(t, a->v.color.a, b->v.color.a);
+		r->v.color.r = LERP(t, a->v.color.r, b->v.color.r);
+		r->v.color.g = LERP(t, a->v.color.g, b->v.color.g);
+		r->v.color.b = LERP(t, a->v.color.b, b->v.color.b);
 	}
-	r->v.u = LERP(t,a->v.u, b->v.u);
-	r->v.v = LERP(t,a->v.v, b->v.v);
+
+	r->v.u = LERP(t, a->v.u, b->v.u);
+	r->v.v = LERP(t, a->v.v, b->v.v);
 
 	if(mini_CurrentContext->Texture2D_State[1])
 	{
@@ -94,11 +92,11 @@ static void hc_ClipWZero(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shadin
 	w = r->bw;
 	outcode = 0;
 
-
 	if (-w > r->bx)
 	{
 		outcode |= MGL_CLIP_LEFT;
 	}
+
 	else if (r->bx > w)
 	{
 		outcode |= MGL_CLIP_RIGHT;
@@ -108,6 +106,7 @@ static void hc_ClipWZero(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shadin
 	{
 		outcode |= MGL_CLIP_BOTTOM;
 	}
+
 	else if (r->by > w)
 	{
 		outcode |= MGL_CLIP_TOP;
@@ -117,6 +116,7 @@ static void hc_ClipWZero(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shadin
 	{
 		outcode |= MGL_CLIP_BACK;
 	}
+
 	else if (r->bz > w)
 	{
 		outcode |= MGL_CLIP_FRONT;
@@ -126,10 +126,11 @@ static void hc_ClipWZero(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shadin
 
 	if(mini_CurrentContext->CurrentTexQValid == GL_TRUE)
 	{
-	if (a->q == 1.0 && b->q == 1.0)
-		r->q = 1.0;
-	else
-		r->q = CLIP_EPS;
+		if (a->q == 1.0 && b->q == 1.0)
+			r->q = 1.0;
+
+		else
+			r->q = CLIP_EPS;
 	}
 }
 
@@ -138,19 +139,21 @@ static void hc_ClipLeft(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shading
 	float w;
 	ULONG outcode;
 	
-
 	float t = (w1+x1)/((w1+x1)-(w2+x2));
-	r->by = LERP(t,a->by, b->by);
-	r->bz = LERP(t,a->bz, b->bz);
-	r->bw = LERP(t,a->bw, b->bw);
+
+	r->by = LERP(t, a->by, b->by);
+	r->bz = LERP(t, a->bz, b->bz);
+	r->bw = LERP(t, a->bw, b->bw);
 	r->bx = -r->bw;
+
 	if(shading == GL_SMOOTH)
 	{
-	r->v.color.a = LERP(t,a->v.color.a, b->v.color.a);
-	r->v.color.r = LERP(t,a->v.color.r, b->v.color.r);
-	r->v.color.g = LERP(t,a->v.color.g, b->v.color.g);
-	r->v.color.b = LERP(t,a->v.color.b, b->v.color.b);
+		r->v.color.a = LERP(t, a->v.color.a, b->v.color.a);
+		r->v.color.r = LERP(t, a->v.color.r, b->v.color.r);
+		r->v.color.g = LERP(t, a->v.color.g, b->v.color.g);
+		r->v.color.b = LERP(t, a->v.color.b, b->v.color.b);
 	}
+
 	r->v.u = LERP(t,a->v.u, b->v.u);
 	r->v.v = LERP(t,a->v.v, b->v.v);
 
@@ -174,6 +177,7 @@ static void hc_ClipLeft(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shading
 	{
 		outcode |= MGL_CLIP_BOTTOM;
 	}
+
 	else if (r->by > w)
 	{
 		outcode |= MGL_CLIP_TOP;
@@ -183,6 +187,7 @@ static void hc_ClipLeft(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shading
 	{
 		outcode |= MGL_CLIP_BACK;
 	}
+
 	else if (r->bz > w)
 	{
 		outcode |= MGL_CLIP_FRONT;
@@ -201,26 +206,27 @@ static void hc_ClipRight(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shadin
 	float w;
 	ULONG outcode;
 	
-
 	float t = (w1-x1)/((w1-x1)-(w2-x2));
-	r->by = LERP(t,a->by, b->by);
-	r->bz = LERP(t,a->bz, b->bz);
-	r->bw = LERP(t,a->bw, b->bw);
+	r->by = LERP(t, a->by, b->by);
+	r->bz = LERP(t, a->bz, b->bz);
+	r->bw = LERP(t, a->bw, b->bw);
 	r->bx = r->bw;
+
 	if(shading == GL_SMOOTH)
 	{
-	r->v.color.a = LERP(t,a->v.color.a, b->v.color.a);
-	r->v.color.r = LERP(t,a->v.color.r, b->v.color.r);
-	r->v.color.g = LERP(t,a->v.color.g, b->v.color.g);
-	r->v.color.b = LERP(t,a->v.color.b, b->v.color.b);
+		r->v.color.a = LERP(t, a->v.color.a, b->v.color.a);
+		r->v.color.r = LERP(t, a->v.color.r, b->v.color.r);
+		r->v.color.g = LERP(t, a->v.color.g, b->v.color.g);
+		r->v.color.b = LERP(t, a->v.color.b, b->v.color.b);
 	}
-	r->v.u = LERP(t,a->v.u, b->v.u);
-	r->v.v = LERP(t,a->v.v, b->v.v);
+
+	r->v.u = LERP(t, a->v.u, b->v.u);
+	r->v.v = LERP(t, a->v.v, b->v.v);
 
 	if(mini_CurrentContext->Texture2D_State[1])
 	{
-		r->tcoord.s = LERP(t,a->tcoord.s, b->tcoord.s);
-		r->tcoord.t = LERP(t,a->tcoord.t, b->tcoord.t);
+		r->tcoord.s = LERP(t, a->tcoord.s, b->tcoord.s);
+		r->tcoord.t = LERP(t, a->tcoord.t, b->tcoord.t);
 	}
 
 	w = r->bw;
@@ -237,6 +243,7 @@ static void hc_ClipRight(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shadin
 	{
 		outcode |= MGL_CLIP_BOTTOM;
 	}
+
 	else if (r->by > w)
 	{
 		outcode |= MGL_CLIP_TOP;
@@ -246,6 +253,7 @@ static void hc_ClipRight(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shadin
 	{
 		outcode |= MGL_CLIP_BACK;
 	}
+
 	else if (r->bz > w)
 	{
 		outcode |= MGL_CLIP_FRONT;
@@ -264,26 +272,27 @@ static void hc_ClipFront(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shadin
 	float w;
 	ULONG outcode;
 
-
 	float t = (w1-z1)/((w1-z1)-(w2-z2));
-	r->bx = LERP(t,a->bx, b->bx);
-	r->by = LERP(t,a->by, b->by);
-	r->bw = LERP(t,a->bw, b->bw);
+	r->bx = LERP(t, a->bx, b->bx);
+	r->by = LERP(t, a->by, b->by);
+	r->bw = LERP(t, a->bw, b->bw);
 	r->bz = r->bw;
+
 	if(shading == GL_SMOOTH)
 	{
-	r->v.color.a = LERP(t,a->v.color.a, b->v.color.a);
-	r->v.color.r = LERP(t,a->v.color.r, b->v.color.r);
-	r->v.color.g = LERP(t,a->v.color.g, b->v.color.g);
-	r->v.color.b = LERP(t,a->v.color.b, b->v.color.b);
+		r->v.color.a = LERP(t, a->v.color.a, b->v.color.a);
+		r->v.color.r = LERP(t, a->v.color.r, b->v.color.r);
+		r->v.color.g = LERP(t, a->v.color.g, b->v.color.g);
+		r->v.color.b = LERP(t, a->v.color.b, b->v.color.b);
 	}
-	r->v.u = LERP(t,a->v.u, b->v.u);
-	r->v.v = LERP(t,a->v.v, b->v.v);
+
+	r->v.u = LERP(t, a->v.u, b->v.u);
+	r->v.v = LERP(t, a->v.v, b->v.v);
 
 	if(mini_CurrentContext->Texture2D_State[1])
 	{
-		r->tcoord.s = LERP(t,a->tcoord.s, b->tcoord.s);
-		r->tcoord.t = LERP(t,a->tcoord.t, b->tcoord.t);
+		r->tcoord.s = LERP(t, a->tcoord.s, b->tcoord.s);
+		r->tcoord.t = LERP(t, a->tcoord.t, b->tcoord.t);
 	}
 
 	w = r->bw;
@@ -299,15 +308,18 @@ static void hc_ClipFront(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shadin
 	{
 		outcode |= MGL_CLIP_LEFT;
 	}
+
 	else if (r->bx > w)
 	{
 		outcode |= MGL_CLIP_RIGHT;
 	}
 */
+
 	if (-w > r->by)
 	{
 		outcode |= MGL_CLIP_BOTTOM;
 	}
+
 	else if (r->by > w)
 	{
 		outcode |= MGL_CLIP_TOP;
@@ -326,26 +338,27 @@ static void hc_ClipBack(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shading
 	float w;
 	ULONG outcode;
 
-
 	float t = (w1+z1)/((w1+z1)-(w2+z2));
-	r->bx = LERP(t,a->bx, b->bx);
-	r->by = LERP(t,a->by, b->by);
-	r->bw = LERP(t,a->bw, b->bw);
+	r->bx = LERP(t, a->bx, b->bx);
+	r->by = LERP(t, a->by, b->by);
+	r->bw = LERP(t, a->bw, b->bw);
 	r->bz = -r->bw;
+
 	if(shading == GL_SMOOTH)
 	{
-	r->v.color.a = LERP(t,a->v.color.a, b->v.color.a);
-	r->v.color.r = LERP(t,a->v.color.r, b->v.color.r);
-	r->v.color.g = LERP(t,a->v.color.g, b->v.color.g);
-	r->v.color.b = LERP(t,a->v.color.b, b->v.color.b);
+		r->v.color.a = LERP(t, a->v.color.a, b->v.color.a);
+		r->v.color.r = LERP(t, a->v.color.r, b->v.color.r);
+		r->v.color.g = LERP(t, a->v.color.g, b->v.color.g);
+		r->v.color.b = LERP(t, a->v.color.b, b->v.color.b);
 	}
-	r->v.u = LERP(t,a->v.u, b->v.u);
-	r->v.v = LERP(t,a->v.v, b->v.v);
+
+	r->v.u = LERP(t, a->v.u, b->v.u);
+	r->v.v = LERP(t, a->v.v, b->v.v);
 
 	if(mini_CurrentContext->Texture2D_State[1])
 	{
-		r->tcoord.s = LERP(t,a->tcoord.s, b->tcoord.s);
-		r->tcoord.t = LERP(t,a->tcoord.t, b->tcoord.t);
+		r->tcoord.s = LERP(t, a->tcoord.s, b->tcoord.s);
+		r->tcoord.t = LERP(t, a->tcoord.t, b->tcoord.t);
 	}
 
 	w = r->bw;
@@ -361,15 +374,18 @@ static void hc_ClipBack(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shading
 	{
 		outcode |= MGL_CLIP_LEFT;
 	}
+
 	else if (r->bx > w)
 	{
 		outcode |= MGL_CLIP_RIGHT;
 	}
 */
+
 	if (-w > r->by)
 	{
 		outcode |= MGL_CLIP_BOTTOM;
 	}
+
 	else if (r->by > w)
 	{
 		outcode |= MGL_CLIP_TOP;
@@ -385,37 +401,39 @@ static void hc_ClipBack(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shading
 
 static void hc_ClipTop(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shading)
 {
-	float w;
-	ULONG outcode;
-
-
 	float t = (w1-y1)/((w1-y1)-(w2-y2));
-	r->bx = LERP(t,a->bx, b->bx);
-	r->bz = LERP(t,a->bz, b->bz);
-	r->bw = LERP(t,a->bw, b->bw);
+	r->bx = LERP(t, a->bx, b->bx);
+	r->bz = LERP(t, a->bz, b->bz);
+	r->bw = LERP(t, a->bw, b->bw);
 	r->by = r->bw;
+
 	if(shading == GL_SMOOTH)
 	{
-	r->v.color.a = LERP(t,a->v.color.a, b->v.color.a);
-	r->v.color.r = LERP(t,a->v.color.r, b->v.color.r);
-	r->v.color.g = LERP(t,a->v.color.g, b->v.color.g);
-	r->v.color.b = LERP(t,a->v.color.b, b->v.color.b);
+		r->v.color.a = LERP(t, a->v.color.a, b->v.color.a);
+		r->v.color.r = LERP(t, a->v.color.r, b->v.color.r);
+		r->v.color.g = LERP(t, a->v.color.g, b->v.color.g);
+		r->v.color.b = LERP(t, a->v.color.b, b->v.color.b);
 	}
-	r->v.u = LERP(t,a->v.u, b->v.u);
-	r->v.v = LERP(t,a->v.v, b->v.v);
+
+	r->v.u = LERP(t, a->v.u, b->v.u);
+	r->v.v = LERP(t, a->v.v, b->v.v);
 
 	if(mini_CurrentContext->Texture2D_State[1])
 	{
-		r->tcoord.s = LERP(t,a->tcoord.s, b->tcoord.s);
-		r->tcoord.t = LERP(t,a->tcoord.t, b->tcoord.t);
+		r->tcoord.s = LERP(t, a->tcoord.s, b->tcoord.s);
+		r->tcoord.t = LERP(t, a->tcoord.t, b->tcoord.t);
 	}
 
 /*
 Surgeon: this is always the 2nd last routine called, so here is no need to recode since a top-code means that there can be no bottom-code - we can safely set the outcode of the clipped vert to 0
 */
+
 #if 1
+
 	r->outcode = 0;
+
 #else
+
 	w = r->bw;
 	outcode = 0;
 
@@ -443,7 +461,9 @@ Surgeon: this is always the 2nd last routine called, so here is no need to recod
 	}
 
 	r->outcode = outcode;
+
 #endif
+
 	if(mini_CurrentContext->CurrentTexQValid == GL_TRUE)
 	{
 		r->q = LERP(t, a->q, b->q);
@@ -452,37 +472,39 @@ Surgeon: this is always the 2nd last routine called, so here is no need to recod
 
 static void hc_ClipBottom(MGLVertex *a, MGLVertex *b, MGLVertex *r, GLenum shading)
 {
-	float w;
-	ULONG outcode;
-
-
 	float t = (w1+y1)/((w1+y1)-(w2+y2));
-	r->bx = LERP(t,a->bx, b->bx);
-	r->bz = LERP(t,a->bz, b->bz);
-	r->bw = LERP(t,a->bw, b->bw);
+	r->bx = LERP(t, a->bx, b->bx);
+	r->bz = LERP(t, a->bz, b->bz);
+	r->bw = LERP(t, a->bw, b->bw);
 	r->by = -r->bw;
+
 	if(shading == GL_SMOOTH)
 	{
-	r->v.color.a = LERP(t,a->v.color.a, b->v.color.a);
-	r->v.color.r = LERP(t,a->v.color.r, b->v.color.r);
-	r->v.color.g = LERP(t,a->v.color.g, b->v.color.g);
-	r->v.color.b = LERP(t,a->v.color.b, b->v.color.b);
+		r->v.color.a = LERP(t, a->v.color.a, b->v.color.a);
+		r->v.color.r = LERP(t, a->v.color.r, b->v.color.r);
+		r->v.color.g = LERP(t, a->v.color.g, b->v.color.g);
+		r->v.color.b = LERP(t, a->v.color.b, b->v.color.b);
 	}
-	r->v.u = LERP(t,a->v.u, b->v.u);
-	r->v.v = LERP(t,a->v.v, b->v.v);
+
+	r->v.u = LERP(t, a->v.u, b->v.u);
+	r->v.v = LERP(t, a->v.v, b->v.v);
 
 	if(mini_CurrentContext->Texture2D_State[1])
 	{
-		r->tcoord.s = LERP(t,a->tcoord.s, b->tcoord.s);
-		r->tcoord.t = LERP(t,a->tcoord.t, b->tcoord.t);
+		r->tcoord.s = LERP(t, a->tcoord.s, b->tcoord.s);
+		r->tcoord.t = LERP(t, a->tcoord.t, b->tcoord.t);
 	}
 
 /*
 Surgeon: this is always the last routine called, so here is no need to recode - we can safely set the outcode of the clipped vert to 0
 */
+
 #if 1
+
 	r->outcode = 0;
+
 #else
+
 	w = r->bw;
 	outcode = 0;
 
@@ -495,6 +517,7 @@ Surgeon: this is always the last routine called, so here is no need to recode - 
 	{
 		outcode |= MGL_CLIP_LEFT;
 	}
+
 	else if (r->bx > w)
 	{
 		outcode |= MGL_CLIP_RIGHT;
@@ -504,6 +527,7 @@ Surgeon: this is always the last routine called, so here is no need to recode - 
 	{
 		outcode |= MGL_CLIP_BACK;
 	}
+
 	else if (r->bz > w)
 	{
 		outcode |= MGL_CLIP_FRONT;
@@ -511,13 +535,12 @@ Surgeon: this is always the last routine called, so here is no need to recode - 
 
 	r->outcode = outcode;
 #endif
+
 	if(mini_CurrentContext->CurrentTexQValid == GL_TRUE)
 	{
 		r->q = LERP(t, a->q, b->q);
 	}
 }
-
-
 
 #undef x1
 #undef y1
@@ -530,9 +553,8 @@ Surgeon: this is always the last routine called, so here is no need to recode - 
 
 GLboolean hc_DecideFrontface(GLcontext context, MGLVertex *a, MGLVertex *b, MGLVertex *c)
 {
-	GLboolean front;
-	float a1,a2,b1,b2,r;
-	float aw,bw,cw;
+	float	a1, a2, b1, b2, r;
+	float 	aw, bw, cw;
 
 	aw = 1.0 / a->bw;
 	bw = 1.0 / b->bw;
@@ -581,57 +603,58 @@ These expressions test the length of the triangle-sides in 3D space and is in es
 
 	r  = a1*b2-a2*b1;
 
-	if ((r < 0.0 && context->CurrentCullSign < 0) ||
-		(r > 0.0 && context->CurrentCullSign > 0))
+	if ((r < 0.0 && context->CurrentCullSign < 0) || (r > 0.0 && context->CurrentCullSign > 0))
 	{
 		return GL_FALSE;
 	}
+
 	else
 	{
 		return GL_TRUE;
 	}
 }
 
-
 void GLFrontFace(GLcontext context, GLenum mode)
 {
-	int facing;
-	GLint sign;
+	int 	facing;
+	GLint 	sign;
 
 	if (mode == GL_CW || mode == GL_CCW)
 	{
-	   context->CurrentFrontFace = mode;
+	   	context->CurrentFrontFace = mode;
 
-	//Surgeon -->
+		//Surgeon -->
 
-	   facing = (int)context->CurrentCullFace;
+	   	facing = (int)context->CurrentCullFace;
 
-	   switch(facing)
-	   {
-		case GL_BACK:
-			sign = 1;
-			break;
-		case GL_FRONT:
-			sign = -1;
-			break;
-		default:
-			sign = 0;
-			break;
-	   }
+	   	switch(facing)
+	   	{
+			case GL_BACK:
+				sign = 1;
+				break;
+
+			case GL_FRONT:
+				sign = -1;
+				break;
+
+			default:
+				sign = 0;
+				break;
+	   	}
 	
-	   if(mode == GL_CW)
-	   {
-		sign = -sign;
-	   }
+	   	if(mode == GL_CW)
+	   	{
+			sign = -sign;
+	   	}
 
-	   context->CurrentCullSign = sign;
+	   	context->CurrentCullSign = sign;
 
-	//Surgeon <--
-
+		//Surgeon <--
 	}
+
 	else
 	{
-		GLFlagError(context, 1, GL_INVALID_ENUM);
+		GLFlagError(context->GLC, 1, GL_INVALID_ENUM);
 	}
 }
 
@@ -641,32 +664,35 @@ void GLCullFace(GLcontext context, GLenum mode)
 
 	if (mode == GL_FRONT || mode == GL_FRONT_AND_BACK || mode == GL_BACK)
 	{
-	context->CurrentCullFace = mode;
+		context->CurrentCullFace = mode;
 
-	//Surgeon -->
+		//Surgeon -->
 
-	   switch ((int)mode)
-	   {
-		case GL_BACK:
-			sign = 1;
-			break;
-		case GL_FRONT:
-			sign = -1;
-			break;
-		default:
-			sign = 0;
-			break;
-	   }
+	   	switch ((int)mode)
+	   	{
+			case GL_BACK:
+				sign = 1;
+				break;
 
-	   if(context->CurrentFrontFace == GL_CW)
-	   {
-		sign = -sign;
-	   }
+			case GL_FRONT:
+				sign = -1;
+				break;
 
-	context->CurrentCullSign = sign;
+			default:
+				sign = 0;
+				break;
+	   	}
 
-	//Surgeon <--
+	   	if(context->CurrentFrontFace == GL_CW)
+	   	{
+			sign = -sign;
+	   	}
+
+		context->CurrentCullSign = sign;
+
+		//Surgeon <--
 	}
+
 	else
 	{
 		GLFlagError(context, 1, GL_INVALID_ENUM);
@@ -740,12 +766,14 @@ void GLCullFace(GLcontext context, GLenum mode)
 #ifndef GLNDEBUG
 void hc_DumpPolygon(GLcontext context, MGLPolygon *poly, char *string, int clipcode)
 {
-	int i;
+	int 	i;
 	mykprintf("--- %s (0x%X) -- (%d vertices)\n", string,clipcode, poly->numverts);
+
 	for (i=0; i<poly->numverts; i++)
 	{
 		DUMP_VERTEX(context->VertexBuffer[poly->verts[i]]);
 	}
+
 	mykprintf("-------------------------\n");
 }
 
@@ -797,28 +825,32 @@ void hc_ClipAndDrawPoly(GLcontext context, MGLPolygon *poly, ULONG or_codes)
 	** At any stage, if the output polygon has zero vertices, return immediately.
 	*/
 
-	MGLPolygon output;
-	MGLPolygon *a, *b, *temp;
-	int i,j;
-	int prev;
-	int free = context->VertexBufferPointer;
-	GLboolean flag;
-	ULONG original_or_codes = or_codes;
+	MGLPolygon 	output;
+	MGLPolygon 	*a, *b, *temp;
+	int 		i, j;
+	int 		prev;
+	int 		free = context->VertexBufferPointer;
+	//GLboolean	flag;
+	//ULONG		original_or_codes = or_codes;
 
-	a = poly; b=&output;
+	a = poly;
+	b = &output;
 
 	CLIPDBG(ClipWZero, MGL_CLIP_NEGW)
 	OLD_DOCLIP(MGL_CLIP_NEGW, ClipWZero);
 
-// Surgeon: conditioned by macro execution
-      if(or_codes & MGL_CLIP_NEGW)
+	// Surgeon: conditioned by macro execution
+
+	if(or_codes & MGL_CLIP_NEGW)
 	{
-	j = 0;
-	or_codes = 0;
+		j = 0;
+		or_codes = 0;
+
 		do
 		{
-		or_codes |= context->VertexBuffer[a->verts[j]].outcode;
-		j++;
+			or_codes |= context->VertexBuffer[a->verts[j]].outcode;
+			j++;
+
 		} while (j < a->numverts);
 	}
 
@@ -849,66 +881,72 @@ void hc_ClipAndDrawPoly(GLcontext context, MGLPolygon *poly, ULONG or_codes)
 
 void hc_ClipAndDrawLine(GLcontext context, MGLPolygon *poly, ULONG or_codes)
 {
-    MGLPolygon output;
-    MGLPolygon *a, *b, *temp;
-    int i,j;
-    int prev;
-    int free = context->VertexBufferPointer;
-    GLboolean flag;
-    ULONG original_or_codes = or_codes;
+    	MGLPolygon	output;
+    	MGLPolygon	*a, *b, *temp;
+    	int 		i, j;
+    	int 		prev;
+    	int 		free = context->VertexBufferPointer;
+    	//GLboolean	flag;
+    	//ULONG		original_or_codes = or_codes;
 
-    a = poly; b=&output;
+    	a = poly; b=&output;
 
-    OLD_DOCLIP(MGL_CLIP_NEGW, ClipWZero);
+    	OLD_DOCLIP(MGL_CLIP_NEGW, ClipWZero);
 
-// Surgeon: conditioned by macro execution
-      if(or_codes & MGL_CLIP_NEGW)
+	// Surgeon: conditioned by macro execution
+
+	if(or_codes & MGL_CLIP_NEGW)
 	{
-	j = 0;
-	or_codes = 0;
+		j = 0;
+		or_codes = 0;
+
 		do
 		{
-		or_codes |= context->VertexBuffer[a->verts[j]].outcode;
-		j++;
+			or_codes |= context->VertexBuffer[a->verts[j]].outcode;
+			j++;
+
 		} while (j < a->numverts);
 	}
 
-    OLD_DOCLIP(MGL_CLIP_LEFT, ClipLeft)
-    OLD_DOCLIP(MGL_CLIP_RIGHT, ClipRight)
-    OLD_DOCLIP(MGL_CLIP_FRONT, ClipFront)
-    OLD_DOCLIP(MGL_CLIP_BACK, ClipBack)
-    OLD_DOCLIP(MGL_CLIP_TOP, ClipTop)
-    OLD_DOCLIP(MGL_CLIP_BOTTOM, ClipBottom)
+    	OLD_DOCLIP(MGL_CLIP_LEFT, ClipLeft)
+    	OLD_DOCLIP(MGL_CLIP_RIGHT, ClipRight)
+    	OLD_DOCLIP(MGL_CLIP_FRONT, ClipFront)
+    	OLD_DOCLIP(MGL_CLIP_BACK, ClipBack)
+    	OLD_DOCLIP(MGL_CLIP_TOP, ClipTop)
+    	OLD_DOCLIP(MGL_CLIP_BOTTOM, ClipBottom)
 
-    dh_DrawLine(context,a);
+    	dh_DrawLine(context,a);
 }
-
 
 //buffering: 
  
 void hc_ClipPoly(GLcontext context, MGLPolygon *poly, PolyBuffer *out, int clipstart, ULONG or_codes)
 {
-	MGLPolygon output;
-	MGLPolygon *a, *b, *temp;
-	int i,j;
-	int prev;
-	int free = clipstart;
-	ULONG original_or_codes = or_codes;
+	MGLPolygon	output;
+	MGLPolygon 	*a, *b, *temp;
+	int 		i, j;
+	int 		prev;
+	int 		free = clipstart;
+	//ULONG		original_or_codes = or_codes;
 
-	a = poly; b=&output;
+	a = poly;
+	b = &output;
 
 	CLIPDBG(ClipWZero, MGL_CLIP_NEGW)
 	DOCLIP(MGL_CLIP_NEGW, ClipWZero);
 
-// Surgeon: conditioned by macro execution
-      if(or_codes & MGL_CLIP_NEGW)
+	// Surgeon: conditioned by macro execution
+
+	if(or_codes & MGL_CLIP_NEGW)
 	{
-	j = 0;
-	or_codes = 0;
+		j = 0;
+		or_codes = 0;
+
 		do
 		{
-		or_codes |= context->VertexBuffer[a->verts[j]].outcode;
-		j++;
+			or_codes |= context->VertexBuffer[a->verts[j]].outcode;
+			j++;
+
 		} while (j < a->numverts);
 	}
 
@@ -932,8 +970,7 @@ void hc_ClipPoly(GLcontext context, MGLPolygon *poly, PolyBuffer *out, int clips
 
 	CLIPDBG(Final,0)
 
-
-//write buffer index
+	//write buffer index
 	for(j=0; j<a->numverts; j++)
 		out->verts[j] = a->verts[j];
 
@@ -941,31 +978,34 @@ void hc_ClipPoly(GLcontext context, MGLPolygon *poly, PolyBuffer *out, int clips
 	out->nextfree = free;
 }
 
-
 void hc_ClipPolyFF(GLcontext context, MGLPolygon *poly, ULONG or_codes)
 {
-	MGLPolygon *out;
-	MGLPolygon output;
-	MGLPolygon *a, *b, *temp;
-	int i,j;
-	int prev;
-	int free = context->VertexBufferPointer;
+	MGLPolygon	*out;
+	MGLPolygon 	output;
+	MGLPolygon 	*a, *b, *temp;
+	int 		i, j;
+	int 		prev;
+	int 		free = context->VertexBufferPointer;
 
-	a = poly; b=&output;
+	a = poly;
+	b = &output;
 	out = poly;
 
 	CLIPDBG(ClipWZero, MGL_CLIP_NEGW)
 	DOCLIP(MGL_CLIP_NEGW, ClipWZero);
 
-// Surgeon: conditioned by macro execution
-      if(or_codes & MGL_CLIP_NEGW)
+	// Surgeon: conditioned by macro execution
+
+	if(or_codes & MGL_CLIP_NEGW)
 	{
-	j = 0;
-	or_codes = 0;
+		j = 0;
+		or_codes = 0;
+
 		do
 		{
-		or_codes |= context->VertexBuffer[a->verts[j]].outcode;
-		j++;
+			or_codes |= context->VertexBuffer[a->verts[j]].outcode;
+			j++;
+
 		} while (j < a->numverts);
 	}
 
@@ -989,7 +1029,7 @@ void hc_ClipPolyFF(GLcontext context, MGLPolygon *poly, ULONG or_codes)
 
 	CLIPDBG(Final,0)
 
-//write buffer index
+	//write buffer index
 	for(j=0; j<a->numverts; j++)
 		poly->verts[j] = a->verts[j];
 

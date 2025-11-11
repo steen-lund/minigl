@@ -380,7 +380,7 @@ void        GLActiveTextureARB(GLcontext context, GLenum unit);
 void        GLMultiTexCoord2fARB(GLcontext context, GLenum unit, GLfloat s, GLfloat t);
 void        GLMultiTexCoord2fvARB(GLcontext context, GLenum unit, GLfloat *v);
 
-void MGLDrawMultitexBuffer (GLcontext context, GLenum BSrc, GLenum BDst, GLenum TexEnv);
+void        MGLDrawMultitexBuffer (GLcontext context, GLenum BSrc, GLenum BDst, GLenum TexEnv);
 
 
 
@@ -401,6 +401,9 @@ void        GLColor4ub(GLcontext context, GLubyte red, GLubyte green, GLubyte bl
 void        GLColor4ubv(GLcontext context, GLubyte *v);
 //void        GLColorPointer(GLcontext context, GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
 void        GLColorTable(GLcontext context, GLenum target, GLenum internalformat, GLint width, GLenum format, GLenum type, GLvoid *data);
+
+void	    GLColorMask(GLcontext context, GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha); // Cowcat
+
 void        GLCullFace(GLcontext context, GLenum mode);
 void        GLDeleteTextures(GLcontext context, GLsizei n, const GLuint *textures);
 void        GLDepthFunc(GLcontext context, GLenum func);
@@ -534,8 +537,14 @@ void        MGLSwitchBuffer(GLcontext context, int bufnr);
 void        MGLSwitchDisplay(GLcontext context);
 void        MGLTexMemStat(GLcontext context, GLint *Current, GLint *Peak);
 void        MGLUnlockDisplay(GLcontext context);
+
+//Cowcat
+void        MGLSetPointer(GLcontext context);
+void        MGLClearPointer(GLcontext context);
+//
+
 void        MGLWriteShotPPM(GLcontext context, char *filename);
-GLboolean        MGLInit(void);
+GLboolean   MGLInit(void);
 void        MGLTerm(void);
 
 #ifdef AUTOMATIC_LOCKING_ENABLE
@@ -612,6 +621,8 @@ void        GLDrawArrays(GLcontext context, GLenum mode, GLint first, GLsizei co
 
 #define glColorTable(target, internalformat, width, format, type, data) GLColorTable(mini_CurrentContext, target, internalformat, width, format, type, data)
 
+#define glColorMask(red, green, blue, alpha) GLColorMask(mini_CurrentContext, red, green, blue, alpha) // Cowcat
+
 #define glCullFace(mode) GLCullFace(mini_CurrentContext, mode)
 
 #define glDeleteTextures(n, textures) GLDeleteTextures(mini_CurrentContext, n, textures)
@@ -633,6 +644,8 @@ void        GLDrawArrays(GLcontext context, GLenum mode, GLint first, GLsizei co
 #define glDrawArrays(mode, first, count) GLDrawArrays(mini_CurrentContext, mode, first, count)
 
 #define glDrawArraysEXT(mode, first, count) GLDrawArrays(mini_CurrentContext, mode, first, count)
+
+#define glMultiDrawArrays(mode, first, count, primcount) GLMultiDrawArrays(mini_CurrentContext, mode, first, count, primcount)
 
 #define glDrawBuffer(mode) GLDrawBuffer(mini_CurrentContext, mode)
 
@@ -735,9 +748,9 @@ void        GLDrawArrays(GLcontext context, GLenum mode, GLint first, GLsizei co
 
 #define glRotatefEXTs(sin_an, cos_an, xyz) GLRotatefEXTs(mini_CurrentContext, sin_an, cos_an, xyz)
 
-#define glScaled(x, y, z) GLScaled(mini_CurrentContext, x, y, z)
+#define glScalef(x, y, z) GLScalef(mini_CurrentContext, x, y, z) // Cowcat
 
-#define glScalef(x, y, z) GLScaled(mini_CurrentContext, (GLdouble)(x), (GLdouble)(y), (GLdouble)(z))
+#define glScaled(x, y, z) GLScaled(mini_CurrentContext, (GLdouble)(x), (GLdouble)(y), (GLdouble)(z)) // Cowcat
 
 #define glScissor(x, y, w, h) GLScissor(mini_CurrentContext, x, y, w, h)
 
@@ -802,6 +815,9 @@ void        GLDrawArrays(GLcontext context, GLenum mode, GLint first, GLsizei co
 #define mglLockDisplay() MGLLockDisplay(mini_CurrentContext)
 #define mglUnlockDisplay() MGLUnlockDisplay(mini_CurrentContext)
 
+//Cowcat
+#define mglSetPointer() MGLSetPointer(mini_CurrentContext)
+#define mglClearPointer() MGLClearPointer(mini_CurrentContext)
 
 #define glColor4f(red, green, blue, alpha)  GLColor4f(mini_CurrentContext, red, green, blue, alpha)
 

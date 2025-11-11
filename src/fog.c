@@ -14,7 +14,7 @@
 
 #include "sysinc.h"
 
-static char rcsid[] = "$Id: fog.c,v 1.1.1.1 2000/04/07 19:44:51 hfrieden Exp $";
+//static char rcsid[] = "$Id: fog.c,v 1.1.1.1 2000/04/07 19:44:51 hfrieden Exp $";
 
 void GLFogf(GLcontext context, GLenum pname, GLfloat param)
 {
@@ -28,15 +28,19 @@ void GLFogf(GLcontext context, GLenum pname, GLfloat param)
 				case GL_LINEAR:
 					context->w3dFogMode = W3D_FOG_LINEAR;
 					break;
+
 				case GL_EXP:
 					context->w3dFogMode = W3D_FOG_EXP;
 					break;
+
 				case GL_EXP2:
 					context->w3dFogMode = W3D_FOG_EXP_2;
 					break;
+
 				default:
 					GLFlagError(context, 1, GL_INVALID_ENUM);
 			}
+
 			break;
 
 		case GL_FOG_DENSITY:
@@ -63,7 +67,6 @@ void GLFogf(GLcontext context, GLenum pname, GLfloat param)
 }
 
 
-
 void GLFogfv(GLcontext context, GLenum pname, GLfloat *param)
 {
 	context->FogDirty = GL_TRUE;
@@ -76,35 +79,44 @@ void GLFogfv(GLcontext context, GLenum pname, GLfloat *param)
 				case GL_LINEAR:
 					context->w3dFogMode = W3D_FOG_LINEAR;
 					break;
+
 				case GL_EXP:
 					context->w3dFogMode = W3D_FOG_EXP;
 					break;
+
 				case GL_EXP2:
 					context->w3dFogMode = W3D_FOG_EXP_2;
 					break;
+
 				default:
 					GLFlagError(context, 1, GL_INVALID_ENUM);
 			}
+
 			break;
 
 		case GL_FOG_DENSITY:
 			GLFlagError(context, *param<0, GL_INVALID_VALUE);
 			context->w3dFog.fog_density = (W3D_Float)(*param);
 			break;
+
 		case GL_FOG_START:
 			context->FogStart = *param;
 			break;
+
 		case GL_FOG_END:
 			context->FogEnd   = *param;
 			break;
+
 		case GL_FOG_INDEX:
 			GLFlagError(context, 1, GL_INVALID_ENUM);
 			break;
+
 		case GL_FOG_COLOR:
 			context->w3dFog.fog_color.r = (W3D_Float)*param;
 			context->w3dFog.fog_color.g = (W3D_Float)*(param+1);
 			context->w3dFog.fog_color.b = (W3D_Float)*(param+2);
 			break;
+
 		default:
 			GLFlagError(context, 1, GL_INVALID_ENUM);
 			break;
@@ -112,7 +124,7 @@ void GLFogfv(GLcontext context, GLenum pname, GLfloat *param)
 }
 
 static float fog_Clamp(float f)
-{
+{	
 	if (f > 1.0)
 		f = 1.0;
 
@@ -130,6 +142,7 @@ void fog_Set(GLcontext context)
 	context->w3dFog.fog_end   = fog_Clamp(-1.0 / ((context->FogEnd)   * (CurrentP->v[OF_43]) + (CurrentP->v[OF_44])));
 
 	error = W3D_SetFogParams(context->w3dContext, &(context->w3dFog), context->w3dFogMode);
+
 	if (error == W3D_UNSUPPORTEDFOG)
 	{
 		context->w3dFogMode = W3D_FOG_INTERPOLATED;

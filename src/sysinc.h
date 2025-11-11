@@ -21,9 +21,7 @@ extern struct Library *Warp3DPPCBase;
 extern struct Library *Warp3DBase;
 #endif
 
-#ifdef __VBCC__
-#pragma amiga-align
-#endif
+#pragma pack(push,2)
 
 #include <exec/types.h>
 #include <exec/exec.h>
@@ -37,83 +35,112 @@ extern struct Library *Warp3DBase;
 #include <Warp3D/Warp3D.h>
 #include <cybergraphx/cybergraphics.h>
 
-#ifdef __VBCC__
-#pragma default-align
-#endif
+#pragma pack(pop)
 
 #if defined(__GNUC__)
-    #define UNUSED  __attribute__ ((unused))
+#define UNUSED  __attribute__ ((unused))
 #else
-    #define UNUSED
+#define UNUSED
 #endif
 
 #if defined(__GNUC__)
-#include "mgl/gl.h"
-	#ifdef __PPC__
-	#include <powerpc/memoryPPC.h>
 
-		#ifndef __STORMGCC__
-			#include <Warp3D/Warp3D_protos.h>
-		#else
-	    		#include <Warp3D/Warp3D.h>
-	    		#include <clib/Warp3D_protos.h>
-		#endif
-		#ifndef __STORMGCC__
-			#include <powerpc/powerpc_protos.h>
-		#else
-			#include <clib/powerpc_protos.h>
-		#endif
+	#include "../include/mgl/gl.h"
+
+	#ifdef __PPC__
+
+	#pragma pack(push,2)
+	#include <powerpc/memoryPPC.h>
+	#pragma pack(pop)
+
+	#ifndef __STORMGCC__
+		#pragma pack(push,2)
+		#include <Warp3D/Warp3D_protos.h>
+		#pragma pack(pop)
+	#else
+	    	#include <Warp3D/Warp3D.h>
+	    	#include <clib/Warp3D_protos.h>
+	#endif
+
+	#ifndef __STORMGCC__
+		#pragma pack(push,2)
+		#include <powerpc/powerpc_protos.h>
+		#pragma pack(pop)
+	#else
+		#include <clib/powerpc_protos.h>
+	#endif
+
+	#pragma pack(push,2)
 	#include <proto/intuition.h>
 	#include <proto/exec.h>
 	#include <proto/graphics.h>
 	#include <proto/dos.h>
 	#include <proto/cybergraphics.h>
-	#else
-      #include <inline/Warp3D.h>
-      #include <inline/intuition.h>
-      #include <inline/exec.h>
-      #include <inline/graphics.h>
-      #include <inline/dos.h>
-      #include <proto/timer.h>
-      #include <inline/timer.h>
-      #include <proto/cybergraphics.h>
-      #endif
+	#pragma pack(pop)
+
+	#else // 68k
+
+	#include <inline/Warp3D.h>
+	#include <inline/intuition.h>
+	#include <inline/exec.h>
+	#include <inline/graphics.h>
+	#include <inline/dos.h>
+	#include <proto/timer.h>
+	#include <inline/timer.h>
+	#include <proto/cybergraphics.h>
+
+	#endif
+
 #elif defined(__STORM__)
-    #include "mgl/gl.h"
-    #include <Warp3D/Warp3D.h>
-    #include <clib/Warp3D_protos.h>
+
+	#include "/include/mgl/gl.h"
+	#include <Warp3D/Warp3D.h>
+	#include <clib/Warp3D_protos.h>
+
     	#ifdef __PPC__
+
     	#include <clib/powerpc_protos.h>
    	#include <clib/cybergraphics_protos.h>
+
    	#else
-      #include <pragma/Warp3D_lib.h>
-      #endif
-    #define INLINE __inline
-    #define inline __inline
+
+	#include <pragma/Warp3D_lib.h>
+
+	#endif
+
+	#define INLINE __inline
+	#define inline __inline
+
 #elif defined(__VBCC__)
-#pragma amiga-align
-    #include <proto/Warp3D.h>
-    #include <proto/intuition.h>
-    #include <proto/exec.h>
-    #include <proto/graphics.h>
-    #include <proto/dos.h>
-    #include <proto/cybergraphics.h>
-    #ifdef __PPC__
-	#include <clib/powerpc_protos.h>
-    #endif
 
-#pragma default-align
+	#pragma pack(push,2)
 
-    #include "mgl/gl.h"
+    	#include <proto/Warp3D.h>
+    	#include <proto/intuition.h>
+    	#include <proto/exec.h>
+    	#include <proto/graphics.h>
+    	#include <proto/dos.h>
+    	#include <proto/cybergraphics.h>
+
+    	#ifdef __PPC__
+	//#include <clib/powerpc_protos.h>
+	#include <powerpc/powerpc.h>
+	#include <proto/powerpc.h>
+    	#endif
+
+	#pragma pack(pop)
+
+    	#include "../include/mgl/gl.h"
 
 	#ifndef inline
 	#define inline
 	#endif
 
-    #define INLINE inline
-    #define __inline inline
+	#define INLINE inline
+	#define __inline inline
+
 #endif
 
-#include <mgl/config.h>
+	#include <mgl/config.h>
 
 #endif

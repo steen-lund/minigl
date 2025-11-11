@@ -21,7 +21,7 @@
 ** (only the lazy programmer needs this overhead :))
 */
 
-#define CLAMP_COLORS 1
+//#define CLAMP_COLORS 1
 
 /* This define enables some sanity-checks for vertexarrays.
 **

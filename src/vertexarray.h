@@ -52,32 +52,33 @@ static INLINE void Reset_W3D_ArrayPointers (GLcontext glctx, GLbitfield cls)
 {
 	if(cls & GLCS_VERTEX)
 	{
-	   if(glctx->VertexArrayPipeline == GL_FALSE)
-	   {
-	     glctx->w3dContext->VertexPointer = (void *)&glctx->ArrayPointer.verts;
-	     glctx->w3dContext->VPStride = glctx->ArrayPointer.vertexstride;
-	     glctx->w3dContext->VPMode = W3D_VERTEX_F_F_F;
-	   }
-	   else
-	   {
-	     glctx->w3dContext->VertexPointer = (void *)&glctx->VertexBuffer[0].bx;
-	     glctx->w3dContext->VPStride = (int)sizeof(MGLVertex);
-	     glctx->w3dContext->VPMode = W3D_VERTEX_F_F_F;
-	   }
+		if(glctx->VertexArrayPipeline == GL_FALSE)
+	   	{
+	     		glctx->w3dContext->VertexPointer = (void *)&glctx->ArrayPointer.verts;
+	     		glctx->w3dContext->VPStride = glctx->ArrayPointer.vertexstride;
+	     		glctx->w3dContext->VPMode = W3D_VERTEX_F_F_F;
+	   	}
+
+	   	else
+	   	{
+	     		glctx->w3dContext->VertexPointer = (void *)&glctx->VertexBuffer[0].bx;
+	     		glctx->w3dContext->VPStride = (int)sizeof(MGLVertex);
+	     		glctx->w3dContext->VPMode = W3D_VERTEX_F_F_F;
+	   	}
 	}
 
 	if(cls & GLCS_COLOR)
 	{
-	glctx->w3dContext->ColorPointer = (void *)glctx->ArrayPointer.colors;
-	glctx->w3dContext->CPStride = (int)glctx->ArrayPointer.colorstride;
-	glctx->w3dContext->CPMode = (ULONG)glctx->ArrayPointer.colormode;
+		glctx->w3dContext->ColorPointer = (void *)glctx->ArrayPointer.colors;
+		glctx->w3dContext->CPStride = (int)glctx->ArrayPointer.colorstride;
+		glctx->w3dContext->CPMode = (ULONG)glctx->ArrayPointer.colormode;
 	}
 
 	if(cls & GLCS_TEXTURE)
 	{
-	glctx->w3dContext->TexCoordPointer[0] = (void *)glctx->ArrayPointer.texcoords;
-	glctx->w3dContext->TPStride[0] = (int)glctx->ArrayPointer.texcoordstride;
-	glctx->w3dContext->TPWOffs[0] = (int)glctx->ArrayPointer.w_off;
+		glctx->w3dContext->TexCoordPointer[0] = (void *)glctx->ArrayPointer.texcoords;
+		glctx->w3dContext->TPStride[0] = (int)glctx->ArrayPointer.texcoordstride;
+		glctx->w3dContext->TPWOffs[0] = (int)glctx->ArrayPointer.w_off;
 	}
 }
 
@@ -90,21 +91,21 @@ static INLINE void Reset_W3D_ArrayPointers (GLcontext glctx, GLbitfield cls)
 	w3dctx->CurrentTex[(int)u] = (W3D_Texture *)tex;	\
 }
 
-#define Set_W3D_ColorPointer(w3dctx,pointer,stride,format,mode, flags) \
+#define Set_W3D_ColorPointer(w3dctx, pointer, stride, format, mode, flags) \
 { \
 	w3dctx->ColorPointer = (void *)pointer;		\
 	w3dctx->CPStride = (int)stride;			\
 	w3dctx->CPMode = ((ULONG)mode | (ULONG)format);	\
 }
 
-#define Set_W3D_TexCoordPointer(w3dctx,pointer,stride,u,v_off, w_off,flags) \
+#define Set_W3D_TexCoordPointer(w3dctx, pointer, stride, u, v_off, w_off, flags) \
 { \
 	w3dctx->TexCoordPointer[(int)u] = (void *)pointer;	\
 	w3dctx->TPStride[(int)u] = (int)stride;		\
 	w3dctx->TPWOffs[(int)u] = (int)w_off;		\
 }
 
-#define Set_W3D_VertexPointer(w3dctx,pointer,stride,mode,flags) \
+#define Set_W3D_VertexPointer(w3dctx, pointer, stride, mode, flags) \
 { \
 	w3dctx->VertexPointer = (void *)pointer;	\
 	w3dctx->VPStride = (int)stride;			\
@@ -114,34 +115,34 @@ static INLINE void Reset_W3D_ArrayPointers (GLcontext glctx, GLbitfield cls)
 
 #define Reset_W3D_ArrayPointers(glctx, cls) \
 { \
-if(cls & GLCS_VERTEX) \
-{ \
-   if(glctx->VertexArrayPipeline == GL_FALSE) \
-   { \
-     glctx->w3dContext->VertexPointer = (void *)&glctx->ArrayPointer.verts; \
-     glctx->w3dContext->VPStride = glctx->ArrayPointer.vertexstride; \
-     glctx->w3dContext->VPMode = W3D_VERTEX_F_F_F; \
-   } \
-   else \
-   { \
-     glctx->w3dContext->VertexPointer = (void *)&glctx->VertexBuffer[0].bx; \
-     glctx->w3dContext->VPStride = (int)sizeof(MGLVertex); \
-     glctx->w3dContext->VPMode = W3D_VERTEX_F_F_F; \
-   } \
-} \
-if(cls & GLCS_COLOR) \
-{ \
-glctx->w3dContext->ColorPointer = (void *)glctx->ArrayPointer.colors; \
-glctx->w3dContext->CPStride = (int)glctx->ArrayPointer.colorstride; \
-glctx->w3dContext->CPMode = (ULONG)glctx->ArrayPointer.colormode; \
-} \
+	if(cls & GLCS_VERTEX) \
+	{ \
+   		if(glctx->VertexArrayPipeline == GL_FALSE) \
+   		{ \
+     			glctx->w3dContext->VertexPointer = (void *)&glctx->ArrayPointer.verts; \
+     			glctx->w3dContext->VPStride = glctx->ArrayPointer.vertexstride; \
+     			glctx->w3dContext->VPMode = W3D_VERTEX_F_F_F; \
+   		} \
+   		else \
+   		{ \
+     			glctx->w3dContext->VertexPointer = (void *)&glctx->VertexBuffer[0].bx; \
+     			glctx->w3dContext->VPStride = (int)sizeof(MGLVertex); \
+     			glctx->w3dContext->VPMode = W3D_VERTEX_F_F_F; \
+   		} \
+	} \
+	if(cls & GLCS_COLOR) \
+	{ \
+		glctx->w3dContext->ColorPointer = (void *)glctx->ArrayPointer.colors; \
+		glctx->w3dContext->CPStride = (int)glctx->ArrayPointer.colorstride; \
+		glctx->w3dContext->CPMode = (ULONG)glctx->ArrayPointer.colormode; \
+	} \
 \
-if(cls & GLCS_TEXTURE) \
-{ \
-glctx->w3dContext->TexCoordPointer[0] = (void *)glctx->ArrayPointer.texcoords; \
-glctx->w3dContext->TPStride[0] = (int)glctx->ArrayPointer.texcoordstride; \
-glctx->w3dContext->TPWOffs[0] = (int)glctx->ArrayPointer.w_off; \
-} \
+	if(cls & GLCS_TEXTURE) \
+	{ \
+		glctx->w3dContext->TexCoordPointer[0] = (void *)glctx->ArrayPointer.texcoords; \
+		glctx->w3dContext->TPStride[0] = (int)glctx->ArrayPointer.texcoordstride; \
+		glctx->w3dContext->TPWOffs[0] = (int)glctx->ArrayPointer.w_off; \
+	} \
 }
 
 #endif
