@@ -8,8 +8,7 @@
 # This file is part of the MiniGL library project
 # See the file Licence.txt for more details
 #
-# Bear doesn't work with vbcc compiler. Use 'make compile_commands' instead
-# to generate compile_commands.json for IDE support
+# Use 'make compile_commands' to generate compile_commands.json for IDE support
 #
 
 INCLUDE = -I./include -I$(VBCC)/targets/ppc-warpos/include -I$(NDK_INCLUDES) -I/opt/vbcc/local/Include_H

@@ -8,6 +8,7 @@
 # This file is part of the MiniGL library project
 # See the file Licence.txt for more details
 #
+# Use 'make compile_commands' to generate compile_commands.json for IDE support
 #
 
 INCLUDE = -I./include -I$(NDK_INCLUDES) -I/opt/vbcc/local/Include_H 
