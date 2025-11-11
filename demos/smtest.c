@@ -10,7 +10,7 @@
 GLboolean ScreenModeCallback(MGLScreenMode *mode)
 {
 	printf("ModeID: %d\n", mode->id);
-	printf("   Size is %d×%d\n", mode->width, mode->height);
+	printf("   Size is %dx%d\n", mode->width, mode->height);
 	printf("   Depth is %d\n", mode->bit_depth);
 	printf("   Name is %s\n", mode->mode_name);
 	printf("\n");
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	id = mglGetSupportedScreenModes(ScreenModeCallback2);
 	printf("Returned id is %d\n", id);
 
-	if (id == -1 || (argc == 2 && 0 == stricmp(argv[1],"-window")))
+	if (id == -1 || (argc == 2 && 0 == strcasecmp(argv[1],"-window")))
 	{
 		mglChooseWindowMode(GL_TRUE);
 	}
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 		Delay(100);
 
 
-		printf("Display info:\nDimensions:%d×%d×%d\n", li.width, li.height, li.depth);
+		printf("Display info:\nDimensions:%dx%dx%d\n", li.width, li.height, li.depth);
 		printf("Pixel format: %d\n", li.pixel_format);
 		printf("Base address: 0x%x\n", li.base_address);
 		printf("Pitch: %d\n", li.pitch);

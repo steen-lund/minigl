@@ -219,26 +219,26 @@ int main(int argc, char *argv[])
 
     for (i=1; i<argc; i++)
     {
-	if (0 == stricmp(argv[i], "-width"))
+	if (0 == strcasecmp(argv[i], "-width"))
 	{
 	    i++;
 	    width = atoi(argv[i]);
 	}
-	if (0 == stricmp(argv[i], "-height"))
+	if (0 == strcasecmp(argv[i], "-height"))
 	{
 	    i++;
 	    height = atoi(argv[i]);
 	}
-	if (0 == stricmp(argv[i], "-window"))
+	if (0 == strcasecmp(argv[i], "-window"))
 	{
 	    mglChooseWindowMode(GL_TRUE);
 	}
-	if (0 == stricmp(argv[i], "-texture"))
+	if (0 == strcasecmp(argv[i], "-texture"))
 	{
 	    i++;
 	    filename = argv[i];
 	}
-	if (0 == stricmp(argv[i], "-flare"))
+	if (0 == strcasecmp(argv[i], "-flare"))
 	{
 	    i++;
 	    flarename = argv[i];

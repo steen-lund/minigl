@@ -312,45 +312,45 @@ int main(int argc, char *argv[])
 
 	for (i=1; i<argc; i++)
 	{
-		if (0 == stricmp(argv[i], "-modeid"))
+		if (0 == strcasecmp(argv[i], "-modeid"))
 		{
 			i++;
 			ModeID = atoi(argv[i]);
 		}
-		if (0 == stricmp(argv[i], "-width"))
+		if (0 == strcasecmp(argv[i], "-width"))
 		{
 			i++;
 			width = atoi(argv[i]);
 		}
-		if (0 == stricmp(argv[i], "-height"))
+		if (0 == strcasecmp(argv[i], "-height"))
 		{
 			i++;
 			height = atoi(argv[i]);
 		}
-		if (0 == stricmp(argv[i],"-xmin"))
+		if (0 == strcasecmp(argv[i],"-xmin"))
 		{
 			i++;
 			Xmin = atof(argv[i]);
 		}
-		if (0 == stricmp(argv[i],"-xmax"))
+		if (0 == strcasecmp(argv[i],"-xmax"))
 		{
 			i++;
 			Xmax = atof(argv[i]);
 		}
-		if (0 == stricmp(argv[i],"-rot"))
+		if (0 == strcasecmp(argv[i],"-rot"))
 		{
 			i++;
 			rot = atof(argv[i]);
 		}
-		if (0 == stricmp(argv[i],"-nocull"))
+		if (0 == strcasecmp(argv[i],"-nocull"))
 		{
 			culling = GL_FALSE;
 		}
-		if (0 == stricmp(argv[i],"-noback"))
+		if (0 == strcasecmp(argv[i],"-noback"))
 		{
 			do_cage = GL_FALSE;
 		}
-		if (0 == stricmp(argv[i],"-window"))
+		if (0 == strcasecmp(argv[i],"-window"))
 		{
 			mglChooseWindowMode(GL_TRUE);
 		}
@@ -358,15 +358,15 @@ int main(int argc, char *argv[])
       if (0 == strcmp(argv[i], "-lock"))
         {
             i++;
-            if (0 == stricmp(argv[i], "manual"))
+            if (0 == strcasecmp(argv[i], "manual"))
             {
                 LockMode = MGL_LOCK_MANUAL;
             }
-            else if (0 == stricmp(argv[i], "auto"))
+            else if (0 == strcasecmp(argv[i], "auto"))
             {
                 LockMode = MGL_LOCK_AUTOMATIC;
             }
-            else if (0 == stricmp(argv[i], "smart"))
+            else if (0 == strcasecmp(argv[i], "smart"))
             {
                 LockMode = MGL_LOCK_SMART;
             }
@@ -386,7 +386,7 @@ int main(int argc, char *argv[])
 	else
 	{
 		mglCreateContextFromID(ModeID, &width, &height);
-		printf("Screen mode is %d×%d\n", width, height);
+		printf("Screen mode is %dï¿½%d\n", width, height);
 	}
 
 

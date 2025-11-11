@@ -87,11 +87,11 @@ int main(int argc, char *argv[])
 	   {
 	   i++;
 
-            if (0 == stricmp(argv[i], "auto"))
+            if (0 == strcasecmp(argv[i], "auto"))
             {
                 LockMode = MGL_LOCK_AUTOMATIC;
             }
-            else if (0 == stricmp(argv[i], "smart"))
+            else if (0 == strcasecmp(argv[i], "smart"))
             {
                 LockMode = MGL_LOCK_SMART;
             }
@@ -103,13 +103,13 @@ int main(int argc, char *argv[])
 
 	   }
 
-	   if (0 == stricmp(argv[i], "-compiled"))
+	   if (0 == strcasecmp(argv[i], "-compiled"))
 	   {
 	   //i++;	//OF (removed)
 			Compiled_Arrays = GL_TRUE;
 	   }
 
-	   if (0 == stricmp(argv[i], "-bypass"))
+	   if (0 == strcasecmp(argv[i], "-bypass"))
 	   {
 	   //i++;	//OF (removed)
 			No_Pipeline = GL_TRUE;

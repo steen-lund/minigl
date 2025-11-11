@@ -79,7 +79,6 @@ int kprintf(char *format, ...)
 #ifdef __VBCC__
 #pragma amiga-align
 
-#include <extra.h>			//OF
 #include <proto/exec.h>
 #include <proto/intuition.h>
 #include <proto/lowlevel.h>
@@ -1041,15 +1040,15 @@ int main(int argc, char **argv)
         else if (0 == strcmp(argv[i], "-lock"))
         {
             i++;
-            if (0 == stricmp(argv[i], "manual"))
+            if (0 == strcasecmp(argv[i], "manual"))
             {
                 LockMode = MGL_LOCK_MANUAL;
             }
-            else if (0 == stricmp(argv[i], "auto"))
+            else if (0 == strcasecmp(argv[i], "auto"))
             {
                 LockMode = MGL_LOCK_AUTOMATIC;
             }
-            else if (0 == stricmp(argv[i], "smart"))
+            else if (0 == strcasecmp(argv[i], "smart"))
             {
                 LockMode = MGL_LOCK_SMART;
             }

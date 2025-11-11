@@ -11,11 +11,6 @@
 #include <stdio.h>
 #include <string.h>	//OF
 
-#ifdef __VBCC__
-#include <extra.h>	//OF
-#endif
-
-
 #ifndef M_PI
 #define M_PI 3.14159265
 #endif
@@ -274,26 +269,26 @@ int main(int argc, char *argv[])
 
     for (i=1; i<argc; i++)
     {
-        if (0 == stricmp(argv[i], "-width"))
+        if (0 == strcasecmp(argv[i], "-width"))
         {
             i++;
             width = atoi(argv[i]);
         }
-        if (0 == stricmp(argv[i], "-height"))
+        if (0 == strcasecmp(argv[i], "-height"))
         {
             i++;
             height = atoi(argv[i]);
         }
-        if (0 == stricmp(argv[i], "-window"))
+        if (0 == strcasecmp(argv[i], "-window"))
         {
             mglChooseWindowMode(GL_TRUE);
         }
-        if (0 == stricmp(argv[i], "-texture"))
+        if (0 == strcasecmp(argv[i], "-texture"))
         {
             i++;
             filename = argv[i];
         }
-        if (0 == stricmp(argv[i], "-flare"))
+        if (0 == strcasecmp(argv[i], "-flare"))
         {
             i++;
             flarename = argv[i];
@@ -302,15 +297,15 @@ int main(int argc, char *argv[])
         if (0 == strcmp(argv[i], "-lock"))
         {
             i++;
-            if (0 == stricmp(argv[i], "manual"))
+            if (0 == strcasecmp(argv[i], "manual"))
             {
                 LockMode = MGL_LOCK_MANUAL;
             }
-            else if (0 == stricmp(argv[i], "auto"))
+            else if (0 == strcasecmp(argv[i], "auto"))
             {
                 LockMode = MGL_LOCK_AUTOMATIC;
             }
-            else if (0 == stricmp(argv[i], "smart"))
+            else if (0 == strcasecmp(argv[i], "smart"))
             {
                 LockMode = MGL_LOCK_SMART;
             }

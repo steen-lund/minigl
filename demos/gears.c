@@ -2,7 +2,6 @@
 #include <mgl/gl.h>
 
 #ifdef __VBCC__
-#include <extra.h> //OF
 	#ifdef __PPC__
 	#include <proto/powerpc.h> //OF
 	#include <proto/graphics.h> //OF
@@ -11,11 +10,7 @@
 #endif
 
 #ifdef __PPC__
-	#if defined (__STORMGCC__) || defined (__VBCC__)
-		#include "/src/sysinc.h"
-	#else
-		#include <../src/sysinc.h>
-	#endif
+	#include <../src/sysinc.h>
 #endif
 
 #include <math.h>
@@ -676,22 +671,22 @@ int main(int argc, char *argv[])
 
 	for (i=1; i<argc; i++)
 	{
-		if (0 == stricmp(argv[i], "-width"))
+		if (0 == strcasecmp(argv[i], "-width"))
 		{
 			i++;
 			width = atoi(argv[i]);
 		}
-		if (0 == stricmp(argv[i], "-height"))
+		if (0 == strcasecmp(argv[i], "-height"))
 		{
 			i++;
 			height = atoi(argv[i]);
 		}
-		if (0 == stricmp(argv[i], "-envmap"))
+		if (0 == strcasecmp(argv[i], "-envmap"))
 		{
 			i++;
 			name = argv[i];
 		}
-		if (0 == stricmp(argv[i], "-window"))
+		if (0 == strcasecmp(argv[i], "-window"))
 		{
 			mglChooseWindowMode(GL_TRUE);
 		}

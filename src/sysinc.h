@@ -48,7 +48,7 @@ extern struct Library *Warp3DBase;
 #endif
 
 #if defined(__GNUC__)
-#include "../include/mgl/gl.h"
+#include "mgl/gl.h"
 	#ifdef __PPC__
 	#include <powerpc/memoryPPC.h>
 
@@ -79,7 +79,7 @@ extern struct Library *Warp3DBase;
       #include <proto/cybergraphics.h>
       #endif
 #elif defined(__STORM__)
-    #include "/include/mgl/gl.h"
+    #include "mgl/gl.h"
     #include <Warp3D/Warp3D.h>
     #include <clib/Warp3D_protos.h>
     	#ifdef __PPC__
@@ -104,7 +104,7 @@ extern struct Library *Warp3DBase;
 
 #pragma default-align
 
-    #include "/include/mgl/gl.h"
+    #include "mgl/gl.h"
 
 	#ifndef inline
 	#define inline
