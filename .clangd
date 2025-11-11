@@ -1,0 +1,26 @@
+CompileFlags:
+    Add: [-D__VBCC__,
+    -D__PPC__,
+    -D__NOINLINE__,
+    -DNO_INLINE_STDARG,
+    -U__GNUC__,
+    # make clangd pretend the proto files for Warp3D and PowerPC has already been include so it doesn't fail prematurely
+    -D_VBCCINLINE_WARP3D_H,
+    -D_VBCCINLINE_POWERPC_H,
+    # Tell clang we're on a 32-bit architecture (pointers are 32-bit)
+    --target=powerpc-unknown-elf,
+    -m32,
+    # Disable pointer signedness warnings (Amiga headers use CONST_STRPTR which is unsigned)
+    -Wno-pointer-sign,
+    -isystem/opt/vbcc/targets/ppc-warpos/include,
+    -isystem/opt/vbcc/targets/posix,
+    -isystem/opt/vbcc/NDK/Include_H,
+    -isystem/opt/vbcc/local/Include_H]
+    Remove: [-speed, -cpu=*, -maxoptpasses=*, -merge-constants, -c99, +warpos, -I/opt/vbcc/*]
+
+Diagnostics:
+    Suppress:
+        - /opt/vbcc/targets/ppc-warpos/include/*
+        - /opt/vbcc/NDK/*
+    UnusedIncludes: None
+    MissingIncludes: None
