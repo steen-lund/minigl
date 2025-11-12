@@ -19,7 +19,7 @@ OP_CFLAGS = -O2 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(DEBUG)
 
 LIBS = -lm060s -lmgl060 -lamiga
 LIBNAME = mgl060.lib
-DIR = Build
+DIR = Build.060
 EXENAME = GLTest
 EXESRC = src/GLTest.c
 
@@ -42,7 +42,7 @@ all: $(LIBNAME) $(DEMOS)
 #	copy include/mgl/#?.h vinclude68k:mgl
 
 clean:
-	rm -rf $(DIR)/*.o $(EXENAME) $(LIBNAME)
+	rm -rf $(DIR)/*.o $(EXENAME) $(LIBNAME) $(DEMOS)
 
 lib: $(LIBNAME)
 	@echo "Done"

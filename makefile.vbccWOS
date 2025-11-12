@@ -40,7 +40,7 @@ all: $(LIBNAME) $(DEMOS)
 #	copy include/mgl/#?.h vincludewos:mgl/
 
 clean:
-	rm -rf $(DIR)/*.o $(EXENAME) $(LIBNAME)
+	rm -rf $(DIR)/*.o $(EXENAME) $(LIBNAME) $(DEMOS)
 
 lib: $(LIBNAME)
 	@echo "Done"
