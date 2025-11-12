@@ -3,6 +3,7 @@
 
 
 #include <stdio.h>
+#include <strings.h>
 #include <mgl/gl.h>
 
 #include <proto/dos.h> // For Delay()

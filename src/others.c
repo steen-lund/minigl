@@ -552,7 +552,7 @@ void MGLMainLoop(GLcontext context)
 
     while (context->Running == GL_TRUE)
     {
-        while (imsg = (struct IntuiMessage *)GetMsg(window->UserPort))
+        while ((imsg = (struct IntuiMessage *)GetMsg(window->UserPort)))
         {
             Class = imsg->Class;
             Code = imsg->Code;

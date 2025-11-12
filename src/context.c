@@ -1636,7 +1636,7 @@ void *MGLCreateContext(int offx, int offy, int w, int h)
     if (!context)
     {
         // printf("Error: Can't get %d bytes of memory for context\n", sizeof(struct GLcontext_t));
-        printf("Error: Can't get %u bytes of memory for context\n", sizeof(struct GLcontext_t)); // OF
+        printf("Error: Can't get %lu bytes of memory for context\n", sizeof(struct GLcontext_t)); // OF
 
         return NULL;
     }
@@ -1907,7 +1907,7 @@ void *MGLCreateContextFromID(GLint id, GLint *width, GLint *height)
     if (!context)
     {
         // printf("Error: Can't get %d bytes of memory for context\n", sizeof(struct GLcontext_t));
-        printf("Error: Can't get %u bytes of memory for context\n", sizeof(struct GLcontext_t)); // OF
+        printf("Error: Can't get %lu bytes of memory for context\n", sizeof(struct GLcontext_t)); // OF
 
         return NULL;
     }
